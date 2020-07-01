@@ -159,7 +159,10 @@ namespace WebServer
                                 break;
                             case 1:
                                 URI = statusToken.Split('/');
-                                URI = URI.Skip(1).ToArray();
+                                if (URI.Length > 1)
+                                {
+                                    URI = URI.Skip(1).ToArray();
+                                }
                                 break;
                             case 2:
                                 if (!(statusToken == "HTTP/1.1"))

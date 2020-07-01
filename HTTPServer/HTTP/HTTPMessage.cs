@@ -8,7 +8,6 @@ namespace WebServer
     {
         public abstract class HTTPMessage
         {
-            //stores
             public enum MIMETypes
             {
                 JSON,

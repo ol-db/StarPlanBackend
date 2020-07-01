@@ -14,7 +14,7 @@ namespace WebServer
 {
     namespace Networking
     {
-        //<todo>
+        // <todo>
         //    <title>
         //        figure out async functionality
         //    </title>

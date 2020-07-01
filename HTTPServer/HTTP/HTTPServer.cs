@@ -21,11 +21,17 @@ namespace WebServer.HTTP
 
         #region ApplicationLayer
 
+        public void Listen() {
+            TCPServer.AcceptConnection();
+        }
+
         public HTTPRequest ReceiveHTTPRequest() {
             string data = TCPServer.ReceiveFromClient(TCPServer.AcceptConnection());
             HTTPRequest request = new HTTPRequest(data);
             return request;
         }
+
+
 
         #endregion
     }

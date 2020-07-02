@@ -10,6 +10,13 @@ namespace WebServer
 {
     namespace HTTP
     {
+        /// <summary>
+        /// decodes the request
+        ///     stores content type
+        ///     stores body
+        ///     stores URI
+        ///     etc etc...
+        /// </summary>
         public class HTTPRequest : HTTPMessage
         {
             //    <todo>
@@ -199,7 +206,7 @@ namespace WebServer
                     line = line.Replace(" ", String.Empty);
 
                     headerTokens = line.Split(':');
-                    if (headerTokens[0].Equals(GetGenericHTTPHeader(GeneralHeaderType.CONTENT_TYPE))) {
+                    if (headerTokens[0].Equals(GetGenericHeader(GeneralHeaders.CONTENT_TYPE))) {
                         if (headerTokens[1].Equals(getHTTPMIMEType(MIMETypes.JSON)) ||
                             headerTokens[1].Equals(getHTTPMIMEType(MIMETypes.PLAIN_TEXT)) ||
                             headerTokens[1].Equals(getHTTPMIMEType(MIMETypes.HTML)) ||

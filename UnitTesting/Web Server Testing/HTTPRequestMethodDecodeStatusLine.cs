@@ -2,7 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using WebServer.HTTP;
 
-namespace UnitTesting
+namespace UnitTesting.Web_Server_Testing
 {
     [TestClass]
     public class HTTPRequestTestStatusLine

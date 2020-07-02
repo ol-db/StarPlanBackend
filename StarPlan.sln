@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StarPlan", "StarPlan\StarPl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebServer", "HTTPServer\WebServer.csproj", "{46B60870-6E8D-4A91-8E53-B585BEF8D14C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTesting", "UnitTesting\UnitTesting.csproj", "{2D914936-F720-48B8-8F96-96C17469C6EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTesting", "UnitTesting\UnitTesting.csproj", "{2D914936-F720-48B8-8F96-96C17469C6EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestService", "RestService\RestService.csproj", "{28E1FC21-24C4-4345-BD7E-A307BAE56A24}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{2D914936-F720-48B8-8F96-96C17469C6EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D914936-F720-48B8-8F96-96C17469C6EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D914936-F720-48B8-8F96-96C17469C6EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28E1FC21-24C4-4345-BD7E-A307BAE56A24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28E1FC21-24C4-4345-BD7E-A307BAE56A24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28E1FC21-24C4-4345-BD7E-A307BAE56A24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28E1FC21-24C4-4345-BD7E-A307BAE56A24}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

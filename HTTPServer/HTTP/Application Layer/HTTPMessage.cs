@@ -13,10 +13,11 @@ namespace WebServer
                 JSON,
                 PLAIN_TEXT,
                 HTML,
-                XML
+                XML,
+                NONE
             }
 
-            public enum GeneralHeaderType
+            public enum GeneralHeaders
             {
                 CONTENT_TYPE
             }
@@ -38,11 +39,11 @@ namespace WebServer
                         return null;
                 }
             }
-            public string GetGenericHTTPHeader(GeneralHeaderType header)
+            public string GetGenericHeader(GeneralHeaders header)
             {
                 switch (header)
                 {
-                    case GeneralHeaderType.CONTENT_TYPE:
+                    case GeneralHeaders.CONTENT_TYPE:
                         return "Content-Type";
                     default:
                         return null;

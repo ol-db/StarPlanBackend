@@ -80,7 +80,7 @@ namespace WebServer
 
             public HTTPResponse(StatusCodes statusCode)
             {
-                Edit(statusCode, MIMETypes.NONE, null);
+                Edit(statusCode, MIMETypes.PLAIN_TEXT, "");
             }
 
             private void Edit(StatusCodes statusCode, MIMETypes contentType, string body)

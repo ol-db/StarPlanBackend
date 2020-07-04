@@ -14,6 +14,16 @@ namespace WebServer
         ///     server name
         ///     etc etc...
         /// </summary>
+
+        /// <todo>
+        ///     <title>
+        ///         validate for body
+        ///     </title>
+        ///     <desc>
+        ///         make sure headers 'Transfer-Encoding:'
+        ///         or 'Content-Length:' are present
+        ///     </desc>
+        /// </todo>
         public class HTTPResponse : HTTPMessage
         {
 
@@ -24,15 +34,20 @@ namespace WebServer
 
             private string statusLine;
             private string headers;
-            private string newLineAndContent;
+            private string newLineAndOptionalContent;
 
             #region statusCode
             //stores
             public enum StatusCodes
             {
+                //success
                 OK = 200,
+                CREATED=201,
+                NO_CONTENT=204,
+
+                //client errors
                 BAD_REQUEST = 400,
-                NOT_FOUND = 404
+                NOT_FOUND = 404,
             }
 
             //returns string values for status codes
@@ -42,6 +57,10 @@ namespace WebServer
                 {
                     case StatusCodes.OK:
                         return "OK";
+                    case StatusCodes.CREATED:
+                        return "CREATED";
+                    case StatusCodes.NO_CONTENT:
+                        return "NO CONTENT";
                     case StatusCodes.BAD_REQUEST:
                         return "BAD REQUEST";
                     case StatusCodes.NOT_FOUND:
@@ -54,26 +73,30 @@ namespace WebServer
 
             #region init
 
-            public HTTPResponse(StatusCodes statusCode, MIMETypes contentType, string body, string server)
+            public HTTPResponse(StatusCodes statusCode, MIMETypes contentType, string body)
             {
-                Edit(statusCode, contentType, body, server);
+                Edit(statusCode, contentType, body);
             }
 
-            public HTTPResponse(StatusCodes statusCode, string server)
+            public HTTPResponse(StatusCodes statusCode)
             {
-                Edit(statusCode, MIMETypes.NONE, null, server);
+                Edit(statusCode, MIMETypes.NONE, null);
             }
 
-            private void Edit(StatusCodes statusCode, MIMETypes contentType, string body, string server)
+            private void Edit(StatusCodes statusCode, MIMETypes contentType, string body)
             {
                 this.statusCode = statusCode;
                 this.contentType = contentType;
                 this.body = body;
-                this.server = server;
+                this.server = HTTPServer.GetServerName();
 
                 ConstructResponseString();
             }
 
+            /// <summary>
+            /// constructs HTTP into UTF-8
+            /// as a string
+            /// </summary>
             private void ConstructResponseString() {
 
                 //create status line
@@ -104,9 +127,9 @@ namespace WebServer
                 //create new line and content with body
                 //
                 //if there is a body
-                newLineAndContent = "";
+                newLineAndOptionalContent = "\n";
                 if (body != null) {
-                    newLineAndContent += string.Format("\n{0}", body);
+                    newLineAndOptionalContent += string.Format("{0}", body);
                 }
             }
 
@@ -116,9 +139,9 @@ namespace WebServer
             {
 
                 return string.Format(
-                    statusLine +            //HTTP status line
-                    headers +               //server header
-                    newLineAndContent       //content type of the body
+                    statusLine +                //HTTP status line
+                    headers +                   //server header
+                    newLineAndOptionalContent   //content type of the body
                     );
             }
 

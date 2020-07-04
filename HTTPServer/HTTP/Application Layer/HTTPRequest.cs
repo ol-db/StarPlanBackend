@@ -168,6 +168,8 @@ namespace WebServer
                                 URI = statusToken.Split('/');
                                 if (URI.Length > 1)
                                 {
+                                    //removes first index of URI
+                                    //to remove empty string value
                                     URI = URI.Skip(1).ToArray();
                                 }
                                 break;

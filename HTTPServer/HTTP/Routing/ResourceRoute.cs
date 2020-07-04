@@ -6,5 +6,6 @@ namespace WebServer.HTTP.Routing
 {
     public class ResourceRoute
     {
+
     }
 }

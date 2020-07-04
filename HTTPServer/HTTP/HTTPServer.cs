@@ -6,17 +6,25 @@ using WebServer.Networking;
 
 namespace WebServer.HTTP
 {
+
+
     public class HTTPServer
     {
         private Server TCPServer;
 
-        private readonly string serverName;
+        #region server name
+        private static readonly string serverName="Aidan's Server";
+
+        public static string GetServerName() {
+            return serverName;
+        }
+        #endregion
 
         //creates new server to listen on port 5000
         //with serverName "StarPlanWebServer"
         public HTTPServer() {
             TCPServer = new Server(5000);
-            serverName = "StarPlanWebServer";
+            
         }
 
 

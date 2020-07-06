@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StarPlan", "StarPlan\StarPl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebServer", "HTTPServer\WebServer.csproj", "{46B60870-6E8D-4A91-8E53-B585BEF8D14C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTesting", "UnitTesting\UnitTesting.csproj", "{2D914936-F720-48B8-8F96-96C17469C6EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitAndIntegrationTesting", "UnitTesting\UnitAndIntegrationTesting.csproj", "{2D914936-F720-48B8-8F96-96C17469C6EA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

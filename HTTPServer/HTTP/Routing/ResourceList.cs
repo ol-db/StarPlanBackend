@@ -4,7 +4,7 @@ using System.Text;
 
 namespace WebServer.HTTP.Routing
 {
-    class ResourceList
+    public class ResourceList
     {
         private List<Resource> resources;
 
@@ -19,7 +19,8 @@ namespace WebServer.HTTP.Routing
         public void AddResource(Resource resourceToAdd) {
             foreach (Resource resource in resources) {
                 if (resource.GetResourceName().Equals(resourceToAdd.GetResourceName())) {
-                    throw new ArgumentException("resource already exists");
+                    throw new ArgumentException(string.Format("resource already exists {0} is the same as {1}", 
+                        resource.GetResourceName(), resourceToAdd.GetResourceName()));
                 }
             }
             resources.Add(resourceToAdd);
@@ -32,7 +33,7 @@ namespace WebServer.HTTP.Routing
                     return resource;
                 }
             }
-            throw new ArgumentException("resource already exists");
+            throw new ArgumentException("resource doesn't exist");
         }
 
         //<todo>

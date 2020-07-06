@@ -13,6 +13,8 @@ namespace WebServer.HTTP.Routing
 
         public Resource(string resourceName) {
             this.resourceName = resourceName;
+            this.subResrouces = new ResourceList();
+            this.methodRoutes = new MethodRouteList();
         }
 
         public void AddMethodRoute(MethodRoute methodRoute) {

@@ -1,8 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using UnitTesting;
 using WebServer.HTTP;
 using WebServer.HTTP.Routing;
 

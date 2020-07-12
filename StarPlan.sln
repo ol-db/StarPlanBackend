@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitAndIntegrationTesting",
 EndProject
 Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "StarPlanDeployment", "StarPlanDeployment\StarPlanDeployment.ccproj", "{8FED6526-43C2-4C8B-ADE8-E0B5243EEC38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkerRole1", "WorkerRole1\WorkerRole1.csproj", "{92767F68-EDF5-41EE-BD78-ABCF24A734BC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StartUpWorkerService", "WorkerRole1\StartUpWorkerService.csproj", "{92767F68-EDF5-41EE-BD78-ABCF24A734BC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

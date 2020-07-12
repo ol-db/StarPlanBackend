@@ -37,9 +37,10 @@ namespace WebServer
 
                 //sends response over client socket
                 this.socket.Send(responseBytes);
+                CloseConnection();
             }
 
-            public void CloseConnection()
+            private void CloseConnection()
             {
 
                 //close the socket

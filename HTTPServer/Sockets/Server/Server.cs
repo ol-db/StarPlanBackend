@@ -44,22 +44,11 @@ namespace WebServer
                 //creates a new TCP socket
                 //socket:       accepts ipv4 addresses, sends variable data size (stream), sends/receives via TCP
                 //binds the socket to the server endpoint
-                Edit(PORT, Dns.GetHostEntry(
-                    Dns.GetHostName()).AddressList[1],
-                    new IPEndPoint(this.serverIP, this.PORT),
-                    new Socket(this.serverIP.AddressFamily, SocketType.Stream, ProtocolType.Tcp));
-            }
-
-            private void Edit(
-                int PORT,
-                IPAddress serverIP, EndPoint serverEndpoint,
-                Socket socket)
-            {
                 this.PORT = PORT;
-                this.serverIP = serverIP;
-                this.serverEndpoint = serverEndpoint;
+                this.serverIP = Dns.GetHostEntry(Dns.GetHostName()).AddressList[1];
+                this.serverEndpoint = new IPEndPoint(this.serverIP, this.PORT);
 
-                this.socket = socket;
+                this.socket = new Socket(this.serverIP.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
                 this.socket.Bind(serverEndpoint);
 
                 this.clients = new ClientList();
@@ -69,6 +58,7 @@ namespace WebServer
             {
                 //starts the server running
                 //backlog refers to max number of connecting users at once
+                Console.WriteLine("Server Listening On Socket {0}:{1} at time {2}", serverIP, PORT,DateTime.Now);
                 this.socket.Listen(backlog);
             }
             #endregion
@@ -82,17 +72,22 @@ namespace WebServer
 
             public int AcceptConnection()
             {
-                return clients.AddClient(socket.Accept());
+                int id = clients.AddClient(socket.Accept());
+                Console.WriteLine("Connection Accpeted... at time {0}", DateTime.Now);
+                return id;
             }
 
             public string ReceiveFromClient(int id)
             {
-                return clients.receiveFromClient(id);
+                string data = clients.receiveFromClient(id);
+                Console.WriteLine("Received Data From User <id:{0}>... at time {1}",id, DateTime.Now);
+                return data;
             }
 
             public void SendToClient(int id, string data)
             {
                 clients.sendToClient(id, data);
+                Console.WriteLine("Sent Data To User <id:{0}>... at time {1}", id, DateTime.Now);
             }
 
 

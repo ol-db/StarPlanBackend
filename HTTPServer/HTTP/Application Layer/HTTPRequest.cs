@@ -159,6 +159,7 @@ namespace WebServer
                                 try
                                 {
                                     requestMethod = RequestMethodTypeStringToValue(statusToken);
+                                    Console.WriteLine("Method {0}", requestMethod.ToString());
                                 }
                                 catch (ArgumentException) {
                                     throw malformedPacket;
@@ -166,6 +167,7 @@ namespace WebServer
                                 break;
                             case 1:
                                 URI = statusToken.Split('/');
+                                Console.WriteLine("URI {0}", statusToken);
                                 if (URI.Length > 1)
                                 {
                                     //removes first index of URI
@@ -242,6 +244,11 @@ namespace WebServer
 
             public string GetRequestMethodString() {
                 return this.requestMethod.ToString();
+            }
+
+            public HTTPRequest.RequestMethodType GetRequestMethod()
+            {
+                return this.requestMethod;
             }
 
             public string GetBody()

@@ -9,6 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebServer", "HTTPServer\Web
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitAndIntegrationTesting", "UnitTesting\UnitAndIntegrationTesting.csproj", "{2D914936-F720-48B8-8F96-96C17469C6EA}"
 EndProject
+Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "StarPlanDeployment", "StarPlanDeployment\StarPlanDeployment.ccproj", "{8FED6526-43C2-4C8B-ADE8-E0B5243EEC38}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkerRole1", "WorkerRole1\WorkerRole1.csproj", "{92767F68-EDF5-41EE-BD78-ABCF24A734BC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{2D914936-F720-48B8-8F96-96C17469C6EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D914936-F720-48B8-8F96-96C17469C6EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D914936-F720-48B8-8F96-96C17469C6EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8FED6526-43C2-4C8B-ADE8-E0B5243EEC38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8FED6526-43C2-4C8B-ADE8-E0B5243EEC38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8FED6526-43C2-4C8B-ADE8-E0B5243EEC38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8FED6526-43C2-4C8B-ADE8-E0B5243EEC38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92767F68-EDF5-41EE-BD78-ABCF24A734BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92767F68-EDF5-41EE-BD78-ABCF24A734BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92767F68-EDF5-41EE-BD78-ABCF24A734BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92767F68-EDF5-41EE-BD78-ABCF24A734BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

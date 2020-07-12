@@ -146,8 +146,13 @@ namespace WebServer
             }
 
             #region getters
-            public int GetStatusCode () {
+            public int GetStatusCodeInt () {
                 return this.statusCode.GetHashCode();
+            }
+
+            public StatusCodes GetStatusCode()
+            {
+                return this.statusCode;
             }
 
             public string GetBody() {

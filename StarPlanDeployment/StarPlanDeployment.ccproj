@@ -40,6 +40,7 @@
   <ItemGroup>
     <Folder Include="Profiles" />
     <Folder Include="StartUpWorkerServiceContent" />
+    <Folder Include="WorkerRole1Content\" />
   </ItemGroup>
   <ItemGroup>
     <DiagnosticsConfiguration Include="WorkerRole1Content\diagnostics.wadcfgx" />

@@ -4,6 +4,8 @@ _Main application logic built in .NET Core 3.1, built libraries in .NET standard
 ### Application Logic
 #### _Use Case Diagram_
 ![Use Case](https://github.com/aidangannon/starPlanDesign/blob/master/UML/StarPlanApplicationLogic/Use%20Case.png)
+#### _ER Diagram_
+![ERD](https://github.com/aidangannon/starPlanDesign/blob/master/E-R/ERD.png)
 #### _Class Diagram_
 ![UML For Application Logic](https://github.com/aidangannon/starPlanDesign/blob/master/UML/StarPlanApplicationLogic/Star%20Plan%20App%20Logic.png)
 ### Libraries

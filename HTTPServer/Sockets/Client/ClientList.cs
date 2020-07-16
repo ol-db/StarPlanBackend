@@ -32,7 +32,6 @@ namespace WebServer
             //adds client and gives them an id
             public int AddClient(Socket clientSocket)
             {
-
                 //calculate id for client
                 //increment id for next client
                 int socketId = idCount;

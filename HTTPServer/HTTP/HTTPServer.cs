@@ -30,6 +30,7 @@ namespace WebServer.HTTP
             TCPServer = new Server(port);
             TCPServer.StartServer(10);
             this.baseResource = baseResource;
+
         }
 
         #region ApplicationLayer

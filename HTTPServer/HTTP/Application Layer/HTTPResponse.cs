@@ -110,7 +110,9 @@ namespace WebServer
 
                 //if server name exists add header
                 if (server != null)
-                    headers += string.Format("Server: {0}\n",server);
+                {
+                    headers += string.Format("Server: {0}\n", server);
+                }
 
                 //if content type exists add header
                 //

@@ -7,7 +7,10 @@ _Main application logic built in .NET Core 3.1, built libraries in .NET standard
 #### _ER Diagram_
 ![ERD](https://github.com/aidangannon/starPlanDesign/blob/master/E-R/ERD.png)
 #### _Class Diagram_
-![UML For Application Logic](https://github.com/aidangannon/starPlanDesign/blob/master/UML/StarPlanApplicationLogic/Star%20Plan%20App%20Logic.png)
+![UML Class Diagram For Application Logic](https://github.com/aidangannon/starPlanDesign/blob/master/UML/StarPlanApplicationLogic/Star%20Plan%20App%20Logic.png)
+#### _Sequence Diagrams_
+##### LoadAllGalaxiesFromDB
+![UML Sequence Diagram For Load Galaxies From DB](https://github.com/aidangannon/starPlanDesign/blob/master/UML/StarPlanApplicationLogic/Sequence%20Diagrams/LoadGalaxiesFromDB.png)
 ### Libraries
 #### HTTP Server
 ##### _Class Diagram_

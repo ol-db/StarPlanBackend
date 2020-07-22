@@ -21,8 +21,4 @@
     <ProjectReference Include="..\StarPlan\StarPlan.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Star Plan Logic Testing\" />
-  </ItemGroup>
-
 </Project>

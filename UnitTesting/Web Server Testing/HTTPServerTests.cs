@@ -18,7 +18,7 @@ namespace UnitAndIntegrationTesting.Web_Server_Testing
         /// </summary>
         /// <returns></returns>
         [TestMethod]
-        public async System.Threading.Tasks.Task RetreiveResponseFromRouteAsync(int[3] name) {
+        public async System.Threading.Tasks.Task RetreiveResponseFromRouteAsync() {
             //arrange
             Resource pupils = new Resource("pupils");
 

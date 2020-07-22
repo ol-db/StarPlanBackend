@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using WebServer.Exceptions.HTTP;
 
 namespace WebServer.HTTP.Routing
 {
@@ -33,7 +34,7 @@ namespace WebServer.HTTP.Routing
                     return resource;
                 }
             }
-            throw new ArgumentException("resource doesn't exist");
+            throw new HTTPResourceNotFoundException(resourceName);
         }
 
         //<todo>

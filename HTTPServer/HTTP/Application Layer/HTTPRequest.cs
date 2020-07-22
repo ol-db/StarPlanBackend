@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using WebServer.Exceptions.HTTP;
 
 namespace WebServer
 {
@@ -136,7 +137,7 @@ namespace WebServer
             //    </todo>
             public void DecodeStatusLine(string HTTPRequest) {
 
-                ArgumentException malformedPacket = new ArgumentException("malformed packet");
+                MalformedHTTPPacketException malformedPacket = new MalformedHTTPPacketException("");
 
                 string statusLine = new StringReader(HTTPRequest).ReadLine();
                 string[] statusTokens;

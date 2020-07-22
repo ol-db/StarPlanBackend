@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WebServer.HTTP;
 using WebServer.HTTP.Routing;
 
-namespace UnitAndIntegrationTesting.Web_Server_Testing
+namespace UnitTesting.Web_Server_Testing
 {
     [TestClass]
     public class HTTPServerTests

@@ -10,6 +10,7 @@ using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json;
 using System.Dynamic;
+using WebServer.Exceptions.HTTP;
 
 namespace UnitTesting.Web_Server_Testing.HTTP_Routing_Tests
 {
@@ -34,8 +35,8 @@ namespace UnitTesting.Web_Server_Testing.HTTP_Routing_Tests
                 //assert
                 Assert.Fail(string.Format("{0} shouldn't exist", resourceName));
             }
-            catch (ArgumentException ae) {
-                System.Diagnostics.Debug.WriteLine(string.Format("{0} doesn't exist", resourceName));
+            catch (HTTPResourceNotFoundException rne) {
+                System.Diagnostics.Debug.WriteLine(rne.Message);
             }
         }
 
@@ -114,7 +115,7 @@ namespace UnitTesting.Web_Server_Testing.HTTP_Routing_Tests
                 foo.GetSubResourceByName("fooBar");
                 Assert.Fail("sub resource shouldn't exist but does...");
             }
-            catch (ArgumentException ae)
+            catch (HTTPResourceNotFoundException rne)
             {
                 //test passes
             }

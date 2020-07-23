@@ -6,7 +6,7 @@ using System.Text;
 namespace StarPlan.Exceptions.RegionExceptions
 {
     [Serializable]
-    class RegionAlreadyExistsException : Exception
+    public class RegionAlreadyExistsException : Exception
     {
         public RegionAlreadyExistsException(Region region)
             : base(String.Format(

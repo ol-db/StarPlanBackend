@@ -36,7 +36,7 @@ namespace StarPlan.Models.Space.Planets
             //verify the region exists
             foreach (Region region in regions)
             {
-                if (region.GetId().Equals(region.GetId()))
+                if (region.GetId().Equals(regionToAdd.GetId()))
                 {
                     throw new ArgumentException("region already exists");
                 }
@@ -57,6 +57,11 @@ namespace StarPlan.Models.Space.Planets
         public int GetNumberOfRegions()
         {
             return regions.Count;
+        }
+
+        public int GetPlanetId()
+        {
+            return planetId;
         }
         #endregion
     }

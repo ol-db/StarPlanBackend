@@ -15,12 +15,24 @@ namespace StarPlan.Models.Space.Planets
     /// </todo>
     public abstract class Planet
     {
+        #region id
         protected int id;
+        private void VerifyId(int id) {
+            if (this.id==id) {
+                //id matches
+            }
+            else
+            {
+                throw new ArgumentException("id doesn't match");
+            }
+        }
+        #endregion
+
         protected string name;
 
         #region regions
         protected RegionList regions;
-        private void VerifyRegionsAmmount()
+        private void VerifyRegionsAmmount(RegionList regions)
         {
             int regionCount = regions.GetNumberOfRegions();
 
@@ -31,7 +43,15 @@ namespace StarPlan.Models.Space.Planets
 
             if ((regionCount >= minRegions) && (regionCount <= maxRegions))
             {
-                //regions are verified
+                //verify that ids match
+                try
+                {
+                    VerifyId(regions.GetPlanetId());
+                }
+                catch (ArgumentException ae)
+                {
+                    throw new RegionsPlanetDoesntMatchException(regions, this);
+                }
             }
             else
             {
@@ -43,7 +63,7 @@ namespace StarPlan.Models.Space.Planets
 
         #region perks
         protected PerkList perks;
-        private void VerifyPerksAmmount()
+        private void VerifyPerksAmmount(PerkList perks)
         {
             int perkCount = perks.GetPerkCount();
 
@@ -52,7 +72,14 @@ namespace StarPlan.Models.Space.Planets
 
             if (perkCount==perkNum)
             {
-                //regions are verified
+                //verify that ids match
+                try
+                {
+                    VerifyId(perks.GetPlanetId());
+                }
+                catch (ArgumentException ae) {
+                    throw new PerksPlanetDoesntMatchException(perks, this);
+                }
             }
             else
             {
@@ -192,6 +219,17 @@ namespace StarPlan.Models.Space.Planets
         #region setters
         private void SetId(int id) {
             this.id = id;
+        }
+        public void SetRegions(RegionList regions)
+        {
+            VerifyRegionsAmmount(regions);
+            this.regions = regions;
+            
+        }
+        public void SetPerks(PerkList perks)
+        {
+            VerifyPerksAmmount(perks);
+            this.perks = perks;
         }
         public void SetName(string name)
         {

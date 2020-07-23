@@ -24,5 +24,12 @@ namespace StarPlan.Models.Perks
             this.id = id;
         }
         #endregion
+
+        #region getters
+        public int GetId()
+        {
+            return id;
+        }
+        #endregion
     }
 }

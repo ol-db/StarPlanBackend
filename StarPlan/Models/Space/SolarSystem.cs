@@ -33,7 +33,7 @@ namespace StarPlan.Models
         #endregion
 
         #region setters
-        public void SetId(int id) {
+        private void SetId(int id) {
             this.id = id;
         }
         #endregion

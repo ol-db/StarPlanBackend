@@ -70,7 +70,7 @@ namespace StarPlan.Models
 
         #region setters
 
-        public void SetId(int id) {
+        private void SetId(int id) {
             this.id = id;
         }
 

@@ -5,6 +5,11 @@ using System.Text;
 namespace StarPlan.Models
 {
     /// <todo>
+    ///     add binary searching
+    ///     for searching through records
+    /// </todo>
+
+    /// <todo>
     ///     fix single responsibility pattern
     ///     find way around having galaxyId for
     ///     SolarSystemList class
@@ -48,7 +53,7 @@ namespace StarPlan.Models
         #endregion
 
         #region setters
-        public void SetGalaxyId(int galaxyId) {
+        private void SetGalaxyId(int galaxyId) {
             this.galaxyId = galaxyId;
         }
         #endregion

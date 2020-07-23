@@ -10,15 +10,17 @@ namespace StarPlan.Models.Perks
         private int id;
 
         public Perk(int id) {
-            Edit(id);
+            Init(id);
         }
 
-        private void Edit(int id) {
-            this.id = id;
+        #region init
+        private void Init(int id) {
+            SetId(id);
         }
+        #endregion
 
         #region setters
-        public void SetId(int id) {
+        private void SetId(int id) {
             this.id = id;
         }
         #endregion

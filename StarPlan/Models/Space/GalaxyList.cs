@@ -5,6 +5,10 @@ using StarPlan.Exceptions.GalaxyExceptions;
 
 namespace StarPlan.Models
 {
+    /// <todo>
+    ///     add binary searching
+    ///     for searching through records
+    /// </todo>
     public class GalaxyList
     {
         private List<Galaxy> galaxies;

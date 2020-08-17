@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Text;
+using System.Data;
 
 namespace StarPlan.Models.Space.Planets
 {
@@ -128,51 +129,54 @@ namespace StarPlan.Models.Space.Planets
             }
         }
         public static Point GetRegionsRange(Planet planet) {
-            try
+
+            PlanetSizeTypes size = GetPlanetSize(planet);
+            switch (size)
             {
-                DwarfPlanet dwarfPlanet = (DwarfPlanet)planet;
-                return new Point(2, 3);
-            }
-            catch (InvalidCastException ice) {
-                try
-                {
-                    MediumPlanet mediumPlanet = (MediumPlanet)planet;
+                case PlanetSizeTypes.DWARF:
+                    return new Point(2, 3);
+                case PlanetSizeTypes.MEDIUM:
                     return new Point(4, 6);
-                }
-                catch (InvalidCastException ice_)
-                {
-                    try
-                    {
-                        GiantPlanet giantPlanet = (GiantPlanet)planet;
-                        return new Point(7, 15);
-                    }
-                    catch (InvalidCastException ice__)
-                    {
-                        throw new NotImplementedException("the planet is not implemented yet");
-                    }
-                }
+                case PlanetSizeTypes.GIANT:
+                    return new Point(7, 15);
+                default:
+                    throw new NotImplementedException("the planet is not implemented yet");
             }
         }
         public static int GetPlanetPerkNumber(Planet planet)
         {
+            PlanetSizeTypes size = GetPlanetSize(planet);
+            switch (size)
+            {
+                case PlanetSizeTypes.DWARF:
+                    return 1;
+                case PlanetSizeTypes.MEDIUM:
+                    return 3;
+                case PlanetSizeTypes.GIANT:
+                    return 6;
+                default:
+                    throw new NotImplementedException("the planet is not implemented yet");
+            }
+        }
+        public static PlanetSizeTypes GetPlanetSize(Planet planet) {
             try
             {
                 DwarfPlanet dwarfPlanet = (DwarfPlanet)planet;
-                return 1;
+                return PlanetSizeTypes.DWARF;
             }
             catch (InvalidCastException ice)
             {
                 try
                 {
                     MediumPlanet mediumPlanet = (MediumPlanet)planet;
-                    return 3;
+                    return PlanetSizeTypes.MEDIUM;
                 }
                 catch (InvalidCastException ice_)
                 {
                     try
                     {
                         GiantPlanet giantPlanet = (GiantPlanet)planet;
-                        return 6;
+                        return PlanetSizeTypes.GIANT;
                     }
                     catch (InvalidCastException ice__)
                     {
@@ -213,10 +217,53 @@ namespace StarPlan.Models.Space.Planets
         #region DB methods
 
         #region edit
-        public void Edit(string name) {
+        /// <todo>
+        /// update size
+        /// </todo>
+        public void Edit(string name,SqlConnection conn)
+        {
+            ///get name in case changes need to
+            ///be reverted because of
+            ///an SQL error
+            ///
+            ///set name in class
+            string lastName = GetName();
             SetName(name);
+
+            try
+            {
+                using (SqlCommand cmd = new SqlCommand("EditPlanet", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+
+
+                    ///catch any SQL error
+                    ///so changes to class
+                    ///can be reverted
+                    ///to keep data consistent
+                    cmd.Parameters.Add("@id", SqlDbType.Int).Value = GetId();
+                    cmd.Parameters.Add("@name", SqlDbType.VarChar).Value = GetName();
+                    cmd.Parameters.Add("@size", SqlDbType.VarChar).Value =
+                        PlanetSizeTypeToString(GetPlanetSize(this));
+
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
+
+                }
+            }
+            catch (Exception se)
+            {
+                SetName(lastName);
+
+                ///<todo>
+                ///add custom exception
+                ///</todo>
+                throw new InvalidOperationException("planet was not altered");
+            }
         }
-        #endregion
+        #endregion 
 
         #endregion
 

@@ -46,7 +46,7 @@ namespace UnitAndIntegrationTesting.Web_Server_Testing
 
             HttpClient client = new HttpClient();
 
-            var result = await client.GetAsync("http://192.168.1.116:3000/school/pupils");
+            var result = await client.GetAsync("http://192.168.1.165:3000/school/pupils");
             string content = await result.Content.ReadAsStringAsync();
 
             //Assert.AreEqual(content, "pupils");

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
 using System.Text;
 
 namespace StarPlan.Models
@@ -24,13 +26,53 @@ namespace StarPlan.Models
             Init(id);
         }
 
+        #region DB methods
+
         #region edit methods
 
-        public void Edit(string name, string desc) {
-            
+        public void Edit(string name, string desc,SqlConnection conn) {
+
+            string lastDesc = GetDesc();
+            string lastName = GetName();
+
             SetName(name);
             SetDesc(desc);
+
+            try
+            {
+                using (SqlCommand cmd = new SqlCommand("EditGalaxy", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+
+
+                    ///catch any SQL error
+                    ///so changes to class
+                    ///can be reverted
+                    ///to keep data consistent
+                    cmd.Parameters.Add("@id", SqlDbType.Int).Value = GetId();
+                    cmd.Parameters.Add("@name", SqlDbType.VarChar).Value = GetName();
+                    cmd.Parameters.Add("@desc", SqlDbType.VarChar).Value = GetDesc();
+
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
+
+                }
+            }
+            catch (Exception se)
+            {
+                SetName(lastName);
+                SetDesc(lastDesc);
+
+                ///<todo>
+                ///add custom exception
+                ///</todo>
+                throw new InvalidOperationException("planet was not altered");
+            }
         }
+
+        #endregion
 
         #endregion
 

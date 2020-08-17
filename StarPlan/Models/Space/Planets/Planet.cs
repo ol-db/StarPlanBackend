@@ -210,10 +210,14 @@ namespace StarPlan.Models.Space.Planets
         }
         #endregion
 
+        #region DB methods
+
         #region edit
         public void Edit(string name) {
             SetName(name);
         }
+        #endregion
+
         #endregion
 
         #region setters

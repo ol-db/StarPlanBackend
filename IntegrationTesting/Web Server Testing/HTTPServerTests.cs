@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -33,7 +34,8 @@ namespace UnitAndIntegrationTesting.Web_Server_Testing
             string[] URI = { "school","pupils" };
 
             //act
-            HTTPServer Server = new HTTPServer(3000, new Resource("school"));
+            int port = 3000;
+            HTTPServer Server = new HTTPServer(port, new Resource("school"));
 
             Server.AddSubRoute(pupils);
 
@@ -49,7 +51,7 @@ namespace UnitAndIntegrationTesting.Web_Server_Testing
             var result = await client.GetAsync("http://192.168.1.165:3000/school/pupils");
             string content = await result.Content.ReadAsStringAsync();
 
-            //Assert.AreEqual(content, "pupils");
+            Assert.AreEqual(content, pupils.GetResourceName());
         }
     }
 }

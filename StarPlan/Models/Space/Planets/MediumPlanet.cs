@@ -10,5 +10,10 @@ namespace StarPlan.Models.Space.Planets
         {
             //inherits from base class constructor
         }
+
+        public MediumPlanet(int id,string name) : base(id,name)
+        {
+            //inherits from base class constructor
+        }
     }
 }

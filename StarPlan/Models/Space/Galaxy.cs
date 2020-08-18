@@ -82,7 +82,8 @@ namespace StarPlan.Models
         {
             this.SolarSystems = new SolarSystemList(id);
             SetId(id);
-            Edit(name, desc);
+            SetName(name);
+            SetDesc(desc);
         }
 
         private void Init(int id)

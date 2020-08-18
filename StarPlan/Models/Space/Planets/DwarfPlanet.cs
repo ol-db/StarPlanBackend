@@ -13,5 +13,10 @@ namespace StarPlan.Models.Space.Planets
             //inherits from base class constructor
         }
 
+        public DwarfPlanet(int id, string name) : base(id,name)
+        {
+            //inherits from base class constructor
+        }
+
     }
 }

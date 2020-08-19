@@ -44,6 +44,7 @@ namespace WebServer
                 OK = 200,
                 CREATED=201,
                 NO_CONTENT=204,
+                CREATED = 300,
 
                 //client errors
                 BAD_REQUEST = 400,

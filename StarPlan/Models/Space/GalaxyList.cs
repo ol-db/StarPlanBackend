@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Text;
 using StarPlan.Exceptions.GalaxyExceptions;
 
@@ -17,13 +19,48 @@ namespace StarPlan.Models
             this.galaxies = new List<Galaxy>();
         }
 
-        public void AddGalaxy(Galaxy galaxy) {
-            galaxies.Add(galaxy);
+        #region DB methods
+
+        public void LoadMapFromDB(SqlConnection conn)
+        {
+            //gets denormalised database to read
+            //with all galaxies, solar systems, planets and regions
+            using (SqlCommand cmd = new SqlCommand("LoadMap", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                conn.Open();
+                try
+                {
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        //reads until the final record
+                        while (reader.Read())
+                        {
+                            int id = reader.GetInt16("galaxyId");
+                            try
+                            {
+                                GetGalaxyById(id).LoadMapFromDB(reader);
+                            }
+                            catch (GalaxyNotFound gnf)
+                            {
+                                AddGalaxy(new Galaxy(id)).LoadMapFromDB(reader);
+                            }
+                        }
+                    }
+                }
+                catch (SqlException se)
+                {
+                    throw new InvalidOperationException("something went wrong");
+                }
+                conn.Close();
+            }
         }
 
-        public void RemoveGalaxy(int id) {
-            galaxies.Remove(GetGalaxyById(id));
-        }
+        #endregion
+
+        #region in memory methods
 
         public Galaxy GetGalaxyById(int id)
         {
@@ -35,6 +72,16 @@ namespace StarPlan.Models
             throw new GalaxyNotFound(id);
         }
 
+        private Galaxy AddGalaxy(Galaxy galaxy)
+        {
+            galaxies.Add(galaxy);
+            return galaxy;
+        }
+
+        #endregion
+
+        #region representation
+
         override
         public string ToString()
         {
@@ -44,5 +91,7 @@ namespace StarPlan.Models
             }
             return ToString;
         }
+
+        #endregion
     }
 }

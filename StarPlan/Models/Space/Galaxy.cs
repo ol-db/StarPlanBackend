@@ -13,7 +13,7 @@ namespace StarPlan.Models
         private int id;
         private string name;
         private string desc;
-        private SolarSystemList SolarSystems;
+        private SolarSystemList solarSystems;
 
         public Galaxy(int id,string name,string desc)
         {
@@ -30,7 +30,7 @@ namespace StarPlan.Models
 
         #region edit methods
 
-        public void Edit(string name, string desc,SqlConnection conn) {
+        public void EditInDB(string name, string desc,SqlConnection conn) {
 
             string lastDesc = GetDesc();
             string lastName = GetName();
@@ -74,16 +74,34 @@ namespace StarPlan.Models
 
         #endregion
 
+        #region get methods
+
+        public void LoadMapFromDB(SqlDataReader reader)
+        {
+            string name = reader.GetString("galaxyName");
+            string desc = reader.GetString("galaxyDesc");
+            Init(name, desc);
+            solarSystems.LoadMapFromDB(reader);
+        }
+
+        #endregion
+
         #endregion
 
         #region init methods
 
         private void Init(int id, string name, string desc)
         {
-            this.SolarSystems = new SolarSystemList(id);
+            this.solarSystems = new SolarSystemList(id);
             SetId(id);
             SetName(name);
             SetDesc(desc);
+        }
+
+        //for when the id has already been initialised
+        private void Init(string name,string desc)
+        {
+            Init(GetId(), name, desc);
         }
 
         private void Init(int id)
@@ -103,7 +121,7 @@ namespace StarPlan.Models
                 "id:{0}\n" +
                 "name:{1}\n" +
                 "desc:{2}\n" +
-                SolarSystems.ToString() +
+                solarSystems.ToString() +
                 "END_OF_GALAXY\n",
                 id, name, desc
                 );

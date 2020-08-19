@@ -27,7 +27,7 @@ namespace StarPlan.Models.Space.Planets
 
         #region edit
 
-        public void Edit(string name, SqlConnection conn)
+        public void EditInDB(string name, SqlConnection conn)
         {
             ///get name in case changes need to
             ///be reverted because of

@@ -34,7 +34,7 @@ namespace IntegrationTesting.App_Logic_Testing.Planet_Tests
                 connStr
                 ))
             {
-                planet.Edit(name, conn);
+                planet.EditInDB(name, conn);
             }
         }
     }

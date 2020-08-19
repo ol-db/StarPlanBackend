@@ -1,5 +1,8 @@
-﻿using System;
+﻿using StarPlan.Exceptions.SolarSystemExceptions;
+using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Text;
 
 namespace StarPlan.Models
@@ -25,6 +28,57 @@ namespace StarPlan.Models
         {
             Init(galaxyId);
         }
+
+        #region DB methods
+
+        public void LoadMapFromDB(SqlDataReader reader)
+        {
+            int id = reader.GetInt32("solarSystemId");
+            try
+            {
+                //AddSolarSystem(new SolarSystem(id)).LoadMapFromDB(reader);
+            }
+            catch (SolarSystemAlreadyExists ssae)
+            {
+                //GetSolarSystemById(id).LoadMapFromDB(reader);
+            }
+
+        }
+
+        #endregion
+
+        #region in memory methods
+
+        public SolarSystem GetSolarSystemById(int id)
+        {
+            foreach (SolarSystem solarSystem in solarSystems)
+            {
+                if (solarSystem.GetId() == id)
+                {
+                    return solarSystem;
+                }
+            }
+            throw new SolarSystemNotFound(id);
+        }
+
+        private SolarSystem AddSolarSystem(SolarSystem solarSystem)
+        {
+            int id = solarSystem.GetId();
+            try
+            {
+                GetSolarSystemById(id);
+                throw new SolarSystemAlreadyExists(id);
+            }
+            catch (SolarSystemNotFound ssnf)
+            {
+                //solar system doesn't already exist
+                solarSystems.Add(solarSystem);
+                return solarSystem;
+            }
+
+        }
+
+        #endregion
 
         #region init
         private void Init(int galaxyId) {

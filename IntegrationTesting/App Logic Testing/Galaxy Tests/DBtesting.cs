@@ -26,7 +26,7 @@ namespace IntegrationTesting.App_Logic_Testing.Galaxy_Tests
                 connStr
                 ))
             {
-                galaxy.Edit(name, desc, conn);
+                galaxy.EditInDB(name, desc, conn);
             }
         }
     }

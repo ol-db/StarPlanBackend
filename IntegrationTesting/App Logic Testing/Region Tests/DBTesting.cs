@@ -13,6 +13,7 @@ namespace IntegrationTesting.App_Logic_Testing.Region_Tests
     {
         [TestMethod]
         [DataRow("name")]
+        
         public void EditRegionTest(string name)
         {
             //<todo>
@@ -26,7 +27,7 @@ namespace IntegrationTesting.App_Logic_Testing.Region_Tests
                 connStr
                 ))
             {
-                region.Edit(name, conn);
+                region.EditInDB(name, conn);
             }
         }
     }

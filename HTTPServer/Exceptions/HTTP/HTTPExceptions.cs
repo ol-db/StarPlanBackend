@@ -15,9 +15,9 @@ namespace WebServer.Exceptions.HTTP
     }
 
     [Serializable]
-    public class HTTPResourceNotFoundException : Exception
+    public class HTTPResourceNotFound : Exception
     {
-        public HTTPResourceNotFoundException(string resourceName)
+        public HTTPResourceNotFound(string resourceName)
             : base(String.Format("HTTP resource '{0}' not found", resourceName))
         {
 

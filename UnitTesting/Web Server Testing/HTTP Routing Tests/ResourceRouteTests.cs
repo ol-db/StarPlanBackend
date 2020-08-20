@@ -15,7 +15,7 @@ using WebServer.Exceptions.HTTP;
 namespace UnitTesting.Web_Server_Testing.HTTP_Routing_Tests
 {
     [TestClass]
-    public class TestResourceRouting
+    public class ResourceRouteTests
     {
 
         [TestMethod]
@@ -23,7 +23,7 @@ namespace UnitTesting.Web_Server_Testing.HTTP_Routing_Tests
         [DataRow("foo")]
         [DataRow("123")]
         [DataRow(null)]
-        public void SearchForResourceThatDoesntExist(string resourceName) {
+        public void GetResourceByName_ResourceNotInList_ResourceNotFound(string resourceName) {
             //arrange
             ResourceList newResources = new ResourceList();
 
@@ -35,7 +35,9 @@ namespace UnitTesting.Web_Server_Testing.HTTP_Routing_Tests
                 //assert
                 Assert.Fail(string.Format("{0} shouldn't exist", resourceName));
             }
-            catch (HTTPResourceNotFoundException rne) {
+            catch (HTTPResourceNotFound rne) {
+
+                //logging
                 System.Diagnostics.Debug.WriteLine(rne.Message);
             }
         }
@@ -43,7 +45,7 @@ namespace UnitTesting.Web_Server_Testing.HTTP_Routing_Tests
         [TestMethod]
         [DataRow("foo")]
         [DataRow("123")]
-        public void SearchForResourceThatDoesExist(string resourceName)
+        public void GetResourceByName_ResourceInList_ResourceFound(string resourceName)
         {
             //arrange
             ResourceList newResources = new ResourceList();
@@ -53,9 +55,11 @@ namespace UnitTesting.Web_Server_Testing.HTTP_Routing_Tests
             {
                 //act
                 newResources.GetResourceByName(resourceName);
+
+                //logging
                 System.Diagnostics.Debug.WriteLine(string.Format("{0} is found", resourceName));
             }
-            catch (ArgumentException ae)
+            catch (HTTPResourceNotFound rne)
             {
                 //assert
                 Assert.Fail(string.Format("{0} should exist", resourceName));
@@ -73,7 +77,7 @@ namespace UnitTesting.Web_Server_Testing.HTTP_Routing_Tests
         /// checks if the resource exists
         /// </summary>
         [TestMethod]
-        public void AddSubResourceAndRetrieveIt()
+        public void GetSubResourceByName_SubResourceInResource_ReturnsSubResource()
         {
             //arrange
             Resource foo = new Resource("foo");
@@ -100,7 +104,7 @@ namespace UnitTesting.Web_Server_Testing.HTTP_Routing_Tests
         /// checks if the resource exists
         /// </summary>
         [TestMethod]
-        public void AddSubResourceAndRetrieveOneThatDoesntExist()
+        public void GetSubResourceByName_SubResourceNotInResource_ArgumentException()
         {
             //arrange
             Resource foo = new Resource("foo");
@@ -115,7 +119,7 @@ namespace UnitTesting.Web_Server_Testing.HTTP_Routing_Tests
                 foo.GetSubResourceByName("fooBar");
                 Assert.Fail("sub resource shouldn't exist but does...");
             }
-            catch (HTTPResourceNotFoundException rne)
+            catch (HTTPResourceNotFound rne)
             {
                 //test passes
             }
@@ -134,7 +138,7 @@ namespace UnitTesting.Web_Server_Testing.HTTP_Routing_Tests
         /// checks if the resources exist inside foo
         /// </summary>
         [TestMethod]
-        public void AddResourceHeirarchyAndRetrieveSubResources1()
+        public void GetSubResourceByName_AddNestedSubResource_ReturnsSubResource()
         {
             //arrange
             Resource foo = new Resource("foo");
@@ -178,7 +182,7 @@ namespace UnitTesting.Web_Server_Testing.HTTP_Routing_Tests
         /// checks if the resources exist inside shop
         /// </summary>
         [TestMethod]
-        public void AddResourceHeirarchyAndRetrieveSubResources2()
+        public void GetSubResourceByName_AddNestedSubResources_ReturnsSubResource()
         {
             //arrange
             Resource shop = new Resource("shop");

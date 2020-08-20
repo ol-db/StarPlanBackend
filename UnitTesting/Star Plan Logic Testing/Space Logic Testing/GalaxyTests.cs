@@ -7,7 +7,7 @@ using StarPlan.Models;
 namespace UnitTesting.Star_Plan_Logic_Testing.Space_Logic_Testing
 {
     [TestClass]
-    public class GalaxyTesting
+    public class GalaxyTests
     {
         /// <summary>
         /// create a new galaxy
@@ -41,16 +41,21 @@ namespace UnitTesting.Star_Plan_Logic_Testing.Space_Logic_Testing
                 )
             )]
         #endregion
-        public void TestCorrectToStringMethod(int id, string name, string desc, string expectedGalaxyString) {
+        public void ToString_ValidObject_ValidString(int id, string name, string desc, string expectedGalaxyString) {
+            
+            //arrange
             Galaxy galaxy = new Galaxy(id, name, desc);
 
+            //act
             string actualGalaxyString = galaxy.ToString();
 
+            //logging
             Console.WriteLine("Expected");
             Console.Write(expectedGalaxyString);
             Console.WriteLine("Actual");
             Console.Write(actualGalaxyString);
 
+            //assert
             Assert.AreEqual(expectedGalaxyString, actualGalaxyString);
         }
 
@@ -63,16 +68,20 @@ namespace UnitTesting.Star_Plan_Logic_Testing.Space_Logic_Testing
         /// <param name="desc"></param>
         [TestMethod]
         #region data
+
+        //boundary
         [DataRow("aaaaaaaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
             "aaaaaaaaaaaaaaaaaaaaa")]
+
+        //valid
         [DataRow("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")]
         #endregion
-        public void TestInvalidNameAndDescLength(string name,string desc) {
+        public void Constructor_NameDescTooLong_ArgumentException(string name,string desc) {
             try
             {
                 //arrange & act
@@ -88,19 +97,22 @@ namespace UnitTesting.Star_Plan_Logic_Testing.Space_Logic_Testing
 
         [TestMethod]
         #region data
+
+        //boundary
         [DataRow("aaaaaaaaaaaaaaaaaaaa",
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
             "aaaaaaaaaaaaaaaaaaaa")]
+
+        //valid
         [DataRow("aaaaaa",
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
             )]
         #endregion
-        public void TestValidNameAndDescLength(string name,string desc)
+        public void Constructor_NameDescValidLength_NoArgumentException(string name,string desc)
         {
-            //arrange
             try
             {
                 //act & arrange

@@ -5,7 +5,7 @@ using WebServer.HTTP;
 namespace UnitTesting.Web_Server_Testing
 {
     [TestClass]
-    public class HTTPRequestTestStatusLine
+    public class HTTPRequestTests
     {
         /// <summary>
         /// checks that decoding the HTTP status line
@@ -16,8 +16,9 @@ namespace UnitTesting.Web_Server_Testing
         [TestMethod]
         [DataRow((new string[] { "*" }), "GET * HTTP/1.1")]
         [DataRow((new string[] { "dog", "cat" }), "GET /dog/cat HTTP/1.1")]
-        public void CorrectURI(string[] URIExpected, string requestStr) {
+        public void Constructor_ValidPacket_Uri(string[] URIExpected, string requestStr) {
 
+            //arrange & act
             HTTPRequest request = new HTTPRequest(requestStr);
 
             #region parameters

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <SSDTUnitTestPath Condition="'$(SSDTUnitTestPath)' == ''">$(VsInstallRoot)\Common7\IDE\Extensions\Microsoft\SQLDB</SSDTUnitTestPath>
   </PropertyGroup>
@@ -27,6 +27,9 @@
     <ProjectReference Include="..\StarPlan\StarPlan.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="App Logic Testing\Galaxy Tests\" />
+    <Folder Include="App Logic Testing\Planet Tests\" />
+    <Folder Include="App Logic Testing\Region Tests\" />
     <Folder Include="DB Server Testing\Galaxy Testing\" />
     <Folder Include="DB Server Testing\Planet Testing\" />
     <Folder Include="DB Server Testing\Region Testing\" />

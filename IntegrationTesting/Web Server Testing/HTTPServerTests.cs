@@ -13,7 +13,7 @@ namespace UnitAndIntegrationTesting.Web_Server_Testing
     public class HTTPServerTests
     {
         [TestMethod]
-        public async System.Threading.Tasks.Task RetreiveResponseFromRouteAsync() {
+        public async System.Threading.Tasks.Task CanRetreiveResponse() {
             //arrange
             Resource pupils = new Resource("pupils");
 

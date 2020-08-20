@@ -24,7 +24,7 @@ namespace UnitTesting.Web_Server_Testing.Routing_Tests
     //      </desc>
     //    </todo>
     [TestClass]
-    public class TestMethodRoutes
+    public class MethodRouteTests
     {
         #region add method tests
         /// <summary>
@@ -32,8 +32,9 @@ namespace UnitTesting.Web_Server_Testing.Routing_Tests
         /// expected to throw an error
         /// </summary>
         [TestMethod]
-        public void AddSameMethodTwice() {
+        public void AddMethodRoute_DuplicateAction_ArgumentException() {
 
+            //arrange
             MethodRouteList methodRoutes = new MethodRouteList();
 
             MethodRoute methodRoute = new MethodRoute(
@@ -45,9 +46,12 @@ namespace UnitTesting.Web_Server_Testing.Routing_Tests
                         )
                     );
 
+            //act
             methodRoutes.AddMethodRoute(methodRoute);
             try {
                 methodRoutes.AddMethodRoute(methodRoute);
+
+                //assert
                 Assert.Fail("Two routes added for the same resources with the same method");
             } catch (ArgumentException ae) {
                 //test passes
@@ -55,9 +59,10 @@ namespace UnitTesting.Web_Server_Testing.Routing_Tests
         }
 
         [TestMethod]
-        public void AddTwoDifferentMethods()
+        public void AddMethodRoute_DifferentActions_NoArgumentException()
         {
 
+            //arrange
             MethodRouteList methodRoutes = new MethodRouteList();
 
             #region params
@@ -79,6 +84,7 @@ namespace UnitTesting.Web_Server_Testing.Routing_Tests
                     );
             #endregion
 
+            //act
             methodRoutes.AddMethodRoute(methodRoute1);
             try
             {
@@ -87,6 +93,7 @@ namespace UnitTesting.Web_Server_Testing.Routing_Tests
             }
             catch (ArgumentException ae)
             {
+                //assert
                 Assert.Fail("Two routes cant be added for the same resources with the different methods");
             }
         }

@@ -11,13 +11,13 @@ using StarPlan.Exceptions.RegionExceptions;
 namespace UnitTesting.Star_Plan_Logic_Testing.Space_Logic_Testing
 {
     [TestClass]
-    public class PlanetTesting
+    public class PlanetTests
     {
 
         #region planet factory testing
 
         [TestMethod]
-        public void GenerateDwarfPlanet()
+        public void GetPlanetFromSize_Dwarf_DwarfPlanet()
         {
             //arrange
             Planet planet;
@@ -36,7 +36,7 @@ namespace UnitTesting.Star_Plan_Logic_Testing.Space_Logic_Testing
         }
 
         [TestMethod]
-        public void GenerateMediumPlanet()
+        public void GetPlanetFromSize_Medium_MediumPlanet()
         {
             //arrange
             Planet planet;
@@ -55,7 +55,7 @@ namespace UnitTesting.Star_Plan_Logic_Testing.Space_Logic_Testing
         }
 
         [TestMethod]
-        public void GenerateGiantPlanet()
+        public void GetPlanetFromSize_Giant_GiantPlanet()
         {
             //arrange
             Planet planet;
@@ -76,7 +76,7 @@ namespace UnitTesting.Star_Plan_Logic_Testing.Space_Logic_Testing
         [TestMethod]
         [DataRow("invalid")]
         [DataRow("")]
-        public void GenerateInvalidPlanet(string planetType)
+        public void GetPlanetFromSize_InvalidSize_ArgumentException(string planetType)
         {
             //arrange
             Planet planet;

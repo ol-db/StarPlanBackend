@@ -34,7 +34,7 @@ namespace WebServer.HTTP.Routing
                     return resource;
                 }
             }
-            throw new HTTPResourceNotFoundException(resourceName);
+            throw new HTTPResourceNotFound(resourceName);
         }
 
         //<todo>

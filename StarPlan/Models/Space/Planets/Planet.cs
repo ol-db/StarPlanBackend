@@ -33,9 +33,11 @@ namespace StarPlan.Models.Space.Planets
 
         #region regions
         protected RegionList regions;
+
+        [Obsolete]
         private void VerifyRegionsAmmount(RegionList regions)
         {
-            int regionCount = regions.GetNumberOfRegions();
+            int regionCount = regions.GetCount();
 
             //get regions range
             Point minMaxRegions = Planet.GetRegionsRange(this);
@@ -51,12 +53,12 @@ namespace StarPlan.Models.Space.Planets
                 }
                 catch (ArgumentException ae)
                 {
-                    throw new RegionsPlanetDoesntMatchException(regions, this);
+                    throw new RegionsPlanetDoesntMatch(regions, this);
                 }
             }
             else
             {
-                throw new RegionOutOfRangeException(maxRegions, minRegions, this);
+                throw new RegionOutOfRange(minMaxRegions);
             }
 
         }
@@ -79,12 +81,12 @@ namespace StarPlan.Models.Space.Planets
                     VerifyId(perks.GetPlanetId());
                 }
                 catch (ArgumentException ae) {
-                    throw new PerksPlanetDoesntMatchException(perks, this);
+                    throw new PerksPlanetDoesntMatch(perks, this);
                 }
             }
             else
             {
-                throw new PerkCountOutOfRangeException(perkNum, this);
+                throw new PerkCountOutOfRange(perkNum, this);
             }
         }
         #endregion
@@ -204,10 +206,16 @@ namespace StarPlan.Models.Space.Planets
         private void Init(int id, string name)
         {
             this.perks = new PerkList(id);
-            this.regions = new RegionList(id);
+            this.regions = new RegionList(id,GetRegionsRange(this));
             SetId(id);
             SetName(name);
         }
+
+        private void Init(string name)
+        {
+            Init(GetId(), name);
+        }
+
         private void Init(int id)
         {
             Init(id, "");
@@ -215,6 +223,12 @@ namespace StarPlan.Models.Space.Planets
         #endregion
 
         #region DB methods
+
+        public void GetFromDB(SqlDataReader reader) 
+        {
+            string name = reader.GetString("name");
+            Init(name);
+        }
 
         #region edit
         /// <todo>
@@ -271,18 +285,7 @@ namespace StarPlan.Models.Space.Planets
         private void SetId(int id) {
             this.id = id;
         }
-        public void SetRegions(RegionList regions)
-        {
-            VerifyRegionsAmmount(regions);
-            this.regions = regions;
-            
-        }
-        public void SetPerks(PerkList perks)
-        {
-            VerifyPerksAmmount(perks);
-            this.perks = perks;
-        }
-        public void SetName(string name)
+        private void SetName(string name)
         {
             this.name = name;
         }
@@ -295,6 +298,11 @@ namespace StarPlan.Models.Space.Planets
         public int GetId() {
             return this.id;
         }
+        public RegionList GetRegions()
+        {
+            return this.regions;
+        }
+
         #endregion
     }
 }

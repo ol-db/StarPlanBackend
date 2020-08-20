@@ -1,6 +1,7 @@
 ﻿using StarPlan.Models.Space.Planets;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Text;
 
 namespace StarPlan.Models
@@ -16,6 +17,7 @@ namespace StarPlan.Models
 
         #region init
         private void init(int id) {
+            planets = new PlanetList(id);
             SetId(id);
         }
         #endregion
@@ -32,6 +34,10 @@ namespace StarPlan.Models
         }
         #endregion
 
+        #region DB methods
+
+        #endregion
+
         #region setters
         private void SetId(int id) {
             this.id = id;
@@ -39,9 +45,16 @@ namespace StarPlan.Models
         #endregion
 
         #region getters
+
         public int GetId() {
             return id;
         }
+
+        public PlanetList GetPlanets()
+        {
+            return this.planets;
+        }
+
         #endregion
     }
 }

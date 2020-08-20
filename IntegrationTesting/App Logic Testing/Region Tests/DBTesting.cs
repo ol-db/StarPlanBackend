@@ -20,15 +20,6 @@ namespace IntegrationTesting.App_Logic_Testing.Region_Tests
             //  prevent hard coding of DB names
             //</todo>
             string connStr = StarPlanConfig.GetDB("StarPlanDB");
-
-            //reference to planet where id=0
-            Region region = new Region(0, "");
-            using (SqlConnection conn = new SqlConnection(
-                connStr
-                ))
-            {
-                region.EditInDB(name, conn);
-            }
         }
     }
 }

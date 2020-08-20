@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.SqlClient;
+using System.Drawing;
 using System.Text;
 
 namespace StarPlan.Models.Space.Planets
@@ -16,14 +17,45 @@ namespace StarPlan.Models.Space.Planets
             Init(id, name);
         }
 
+        public Region(int id)
+        {
+            Init(id);
+        }
+
         #region init
+
         private void Init(int id,string name) {
             SetId(id);
             SetName(name);
         }
+
+        /// <todo>
+        ///     init method for
+        ///     get from DB
+        ///     
+        ///     error check Id
+        ///     being equal to null
+        /// </todo>
+        private void Init(string name)
+        {
+            Init(GetId(), name);
+        }
+
+        private void Init(int id)
+        {
+            Init(id, "");
+        }
+
         #endregion
 
         #region DB methods
+
+        public void GetFromDB(SqlDataReader reader)
+        {
+            string name = reader.GetString("name");
+
+            Init(name);
+        }
 
         #region edit
 
@@ -77,7 +109,7 @@ namespace StarPlan.Models.Space.Planets
         private void SetId(int id) {
             this.id = id;
         }
-        public void SetName(string name)
+        private void SetName(string name)
         {
             this.name = name;
         }

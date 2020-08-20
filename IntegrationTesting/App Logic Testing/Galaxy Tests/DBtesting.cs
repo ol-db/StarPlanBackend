@@ -19,15 +19,6 @@ namespace IntegrationTesting.App_Logic_Testing.Galaxy_Tests
             //  prevent hard coding of DB names
             //</todo>
             string connStr = StarPlanConfig.GetDB("StarPlanDB");
-
-            //reference to planet where id=0
-            Galaxy galaxy = new Galaxy(0, "", "");
-            using (SqlConnection conn = new SqlConnection(
-                connStr
-                ))
-            {
-                galaxy.EditInDB(name, desc, conn);
-            }
         }
     }
 }

@@ -73,15 +73,10 @@ namespace UnitTesting.Star_Plan_Logic_Testing.Space_Logic_Testing
             "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")]
         #endregion
         public void TestInvalidNameAndDescLength(string name,string desc) {
-
-            //arrange
-            Galaxy galaxy = new Galaxy(0);
-
             try
             {
-                //act
-                galaxy.SetName(name);
-                galaxy.SetDesc(desc);
+                //arrange & act
+                Galaxy galaxy = new Galaxy(0, name, desc);
 
                 //assert
                 Assert.Fail();
@@ -106,13 +101,10 @@ namespace UnitTesting.Star_Plan_Logic_Testing.Space_Logic_Testing
         public void TestValidNameAndDescLength(string name,string desc)
         {
             //arrange
-            Galaxy galaxy = new Galaxy(0);
-
             try
             {
-                //act
-                galaxy.SetName(name);
-                galaxy.SetDesc(desc);
+                //act & arrange
+                Galaxy galaxy = new Galaxy(0,name,desc);
                 //test passed
             }
             catch (ArgumentException ae)

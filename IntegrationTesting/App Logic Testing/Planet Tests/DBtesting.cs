@@ -27,15 +27,6 @@ namespace IntegrationTesting.App_Logic_Testing.Planet_Tests
             //  prevent hard coding of DB names
             //</todo>
             string connStr = StarPlanConfig.GetDB("StarPlanDB");
-
-            //reference to planet where id=0
-            DwarfPlanet planet = new DwarfPlanet(0, "");
-            using (SqlConnection conn = new SqlConnection(
-                connStr
-                ))
-            {
-                planet.EditInDB(name, conn);
-            }
         }
     }
 }

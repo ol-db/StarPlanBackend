@@ -31,25 +31,59 @@ namespace StarPlan.Models
 
         #region DB methods
 
-        public void LoadMapFromDB(SqlDataReader reader)
+        public void LoadMapFromDB(SqlConnection conn)
         {
-            int id = reader.GetInt32("solarSystemId");
-            try
+            GetAllFromDB(conn);
+            foreach (SolarSystem solarSystem in solarSystems)
             {
-                //AddSolarSystem(new SolarSystem(id)).LoadMapFromDB(reader);
+                solarSystem.GetPlanets().LoadMapFromDB(conn);
             }
-            catch (SolarSystemAlreadyExists ssae)
-            {
-                //GetSolarSystemById(id).LoadMapFromDB(reader);
-            }
+        }
 
+        /// <summary>
+        ///     gets all the solar systems
+        ///     belonging to the parent
+        ///     galaxy
+        /// </summary>
+        /// <param name="conn"></param>
+        public void GetAllFromDB(SqlConnection conn)
+        {
+            
+            using (SqlCommand cmd = new SqlCommand("LoadSolarSystems", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                cmd.Parameters.Add("@galaxyId", SqlDbType.Int).Value = GetGalaxyId();
+
+                try
+                {
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            int id = reader.GetInt32("id");
+                            Add(new SolarSystem(id));
+                        }
+                    }
+                    else
+                    {
+                        //no solar systems exist
+                    }
+                    reader.Close();
+                }
+                catch (SqlException se)
+                {
+                    throw new InvalidOperationException("something went wrong");
+                }
+            }
         }
 
         #endregion
 
         #region in memory methods
 
-        public SolarSystem GetSolarSystemById(int id)
+        public SolarSystem GetById(int id)
         {
             foreach (SolarSystem solarSystem in solarSystems)
             {
@@ -61,12 +95,12 @@ namespace StarPlan.Models
             throw new SolarSystemNotFound(id);
         }
 
-        private SolarSystem AddSolarSystem(SolarSystem solarSystem)
+        private SolarSystem Add(SolarSystem solarSystem)
         {
             int id = solarSystem.GetId();
             try
             {
-                GetSolarSystemById(id);
+                GetById(id);
                 throw new SolarSystemAlreadyExists(id);
             }
             catch (SolarSystemNotFound ssnf)

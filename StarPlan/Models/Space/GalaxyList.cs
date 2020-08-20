@@ -21,40 +21,53 @@ namespace StarPlan.Models
 
         #region DB methods
 
+        //<todo>
+        //  add exception for no galaxies
+        //<todo/>
+
+        /// <summary>
+        ///     reads 
+        /// </summary>
+        /// <param name="conn"></param>
+
         public void LoadMapFromDB(SqlConnection conn)
+        {
+            GetAllFromDB(conn);
+            foreach (Galaxy galaxy in galaxies)
+            {
+                galaxy.GetSolarSystems().LoadMapFromDB(conn);
+            }
+        }
+
+        public void GetAllFromDB(SqlConnection conn)
         {
             //gets denormalised database to read
             //with all galaxies, solar systems, planets and regions
-            using (SqlCommand cmd = new SqlCommand("LoadMap", conn))
+            using (SqlCommand cmd = new SqlCommand("LoadGalaxies", conn))
             {
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                conn.Open();
                 try
                 {
                     SqlDataReader reader = cmd.ExecuteReader();
                     if (reader.HasRows)
                     {
-                        //reads until the final record
                         while (reader.Read())
                         {
-                            int id = reader.GetInt16("galaxyId");
-                            try
-                            {
-                                GetGalaxyById(id).LoadMapFromDB(reader);
-                            }
-                            catch (GalaxyNotFound gnf)
-                            {
-                                AddGalaxy(new Galaxy(id)).LoadMapFromDB(reader);
-                            }
+                            int id = reader.GetInt32("id");
+                            Add(new Galaxy(id)).GetFromDB(reader);
                         }
                     }
+                    else
+                    {
+                        //no galaxies exist
+                    }
+                    reader.Close();
                 }
                 catch (SqlException se)
                 {
                     throw new InvalidOperationException("something went wrong");
                 }
-                conn.Close();
             }
         }
 
@@ -62,7 +75,7 @@ namespace StarPlan.Models
 
         #region in memory methods
 
-        public Galaxy GetGalaxyById(int id)
+        public Galaxy GetById(int id)
         {
             foreach (Galaxy galaxy in galaxies) {
                 if (galaxy.GetId() == id) {
@@ -72,10 +85,20 @@ namespace StarPlan.Models
             throw new GalaxyNotFound(id);
         }
 
-        private Galaxy AddGalaxy(Galaxy galaxy)
+        private Galaxy Add(Galaxy galaxy)
         {
-            galaxies.Add(galaxy);
-            return galaxy;
+            int id = galaxy.GetId();
+            try
+            {
+                GetById(id);
+                throw new GalaxyAlreadyExists(id);
+            }
+            catch (GalaxyNotFound gnf) 
+            {
+                galaxies.Add(galaxy);
+                return galaxy;
+            }
+            
         }
 
         #endregion

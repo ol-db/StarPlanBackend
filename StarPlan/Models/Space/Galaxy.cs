@@ -76,12 +76,17 @@ namespace StarPlan.Models
 
         #region get methods
 
-        public void LoadMapFromDB(SqlDataReader reader)
+        /// <summary>
+        ///     reads attributes for
+        ///     galaxy from DB
+        ///     into class object
+        /// </summary>
+        /// <param name="reader"></param>
+        public void GetFromDB(SqlDataReader reader)
         {
-            string name = reader.GetString("galaxyName");
-            string desc = reader.GetString("galaxyDesc");
+            string name = reader.GetString("name");
+            string desc = reader.GetString("description");
             Init(name, desc);
-            solarSystems.LoadMapFromDB(reader);
         }
 
         #endregion
@@ -135,7 +140,7 @@ namespace StarPlan.Models
             this.id = id;
         }
 
-        public void SetDesc(string desc)
+        private void SetDesc(string desc)
         {
             if (desc.Length > 200) {
                 throw new ArgumentException("desc is too long");
@@ -144,7 +149,7 @@ namespace StarPlan.Models
             
         }
 
-        public void SetName(string name)
+        private void SetName(string name)
         {
             if (name.Length > 20)
             {
@@ -170,6 +175,11 @@ namespace StarPlan.Models
         public string GetDesc()
         {
             return this.desc;
+        }
+
+        public SolarSystemList GetSolarSystems()
+        {
+            return this.solarSystems;
         }
 
         #endregion

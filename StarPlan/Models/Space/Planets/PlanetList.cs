@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Text;
+using StarPlanDBAccess.ORM;
 
 namespace StarPlan.Models.Space.Planets
 {
@@ -47,8 +48,10 @@ namespace StarPlan.Models.Space.Planets
                     {
                         while (reader.Read())
                         {
-                            int id = reader.GetInt32("id");
-                            string size = reader.GetString("size");
+                            int id = (int)RecordAccess.GetFeildFromReader(
+                                Planet.GetFeildNames(Planet.FeildType.ID),reader);
+                            string size = (string)RecordAccess.GetFeildFromReader(
+                                Planet.GetFeildNames(Planet.FeildType.SIZE), reader);
                             
                             Add(PlanetFactory.GetPlanetFromSize(id, size)).GetFromDB(reader);
                         }

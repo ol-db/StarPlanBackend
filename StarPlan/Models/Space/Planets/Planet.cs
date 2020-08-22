@@ -7,6 +7,8 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.Text;
 using System.Data;
+using StarPlanDBAccess.Exceptions;
+using StarPlanDBAccess.ORM;
 
 namespace StarPlan.Models.Space.Planets
 {
@@ -16,6 +18,36 @@ namespace StarPlan.Models.Space.Planets
     /// </todo>
     public abstract class Planet
     {
+        #region DB Feilds
+        public enum FeildType
+        {
+            ID,
+            NAME,
+            SIZE
+        }
+
+        public static string[] GetFeildNames(FeildType feild)
+        {
+            if (feild == FeildType.ID)
+            {
+                return new string[] { "id", "planetId" };
+            }
+            else if (feild == FeildType.NAME)
+            {
+                return new string[] { "name", "planetName" };
+            }
+            else if (feild == FeildType.SIZE)
+            {
+                return new string[] { "size", "planetSize" };
+            }
+            else
+            {
+                throw new FeildNotFound();
+            }
+        }
+
+        #endregion
+
         #region id
         protected int id;
         private void VerifyId(int id) {
@@ -33,97 +65,45 @@ namespace StarPlan.Models.Space.Planets
 
         #region regions
         protected RegionList regions;
-
-        [Obsolete]
-        private void VerifyRegionsAmmount(RegionList regions)
-        {
-            int regionCount = regions.GetCount();
-
-            //get regions range
-            Point minMaxRegions = Planet.GetRegionsRange(this);
-            int minRegions = minMaxRegions.X;
-            int maxRegions = minMaxRegions.Y;
-
-            if ((regionCount >= minRegions) && (regionCount <= maxRegions))
-            {
-                //verify that ids match
-                try
-                {
-                    VerifyId(regions.GetPlanetId());
-                }
-                catch (ArgumentException ae)
-                {
-                    throw new RegionsPlanetDoesntMatch(regions, this);
-                }
-            }
-            else
-            {
-                throw new RegionOutOfRange(minMaxRegions);
-            }
-
-        }
         #endregion
 
         #region perks
         protected PerkList perks;
-        private void VerifyPerksAmmount(PerkList perks)
-        {
-            int perkCount = perks.GetPerkCount();
-
-            //get number of perks
-            int perkNum = GetPlanetPerkNumber(this);
-
-            if (perkCount==perkNum)
-            {
-                //verify that ids match
-                try
-                {
-                    VerifyId(perks.GetPlanetId());
-                }
-                catch (ArgumentException ae) {
-                    throw new PerksPlanetDoesntMatch(perks, this);
-                }
-            }
-            else
-            {
-                throw new PerkCountOutOfRange(perkNum, this);
-            }
-        }
         #endregion
 
         #region planet size
-        public enum PlanetSizeTypes{
+        public enum SizeTypes{
             DWARF,
             MEDIUM,
             GIANT
         }
-        public static string PlanetSizeTypeToString(PlanetSizeTypes size) {
+        public static string PlanetSizeTypeToString(SizeTypes size) {
             switch (size) {
-                case PlanetSizeTypes.DWARF:
-                case PlanetSizeTypes.MEDIUM:
-                case PlanetSizeTypes.GIANT:
+                case SizeTypes.DWARF:
+                case SizeTypes.MEDIUM:
+                case SizeTypes.GIANT:
                     return size.ToString().ToLower();
                 default:
                     throw new ArgumentException("not a valid planet type");
 
             }
         }
-        public static PlanetSizeTypes PlanetStringToSizeType(string size)
+        public static SizeTypes PlanetStringToSizeType(string size)
         {
-            string dwarf = PlanetSizeTypes.DWARF.ToString().ToLower();
-            string medium = PlanetSizeTypes.MEDIUM.ToString().ToLower();
-            string giant = PlanetSizeTypes.GIANT.ToString().ToLower();
+            string dwarf = SizeTypes.DWARF.ToString().ToLower();
+            string medium = SizeTypes.MEDIUM.ToString().ToLower();
+            string giant = SizeTypes.GIANT.ToString().ToLower();
             if (size.Equals(dwarf))
             {
-                return PlanetSizeTypes.DWARF;
+                return SizeTypes.DWARF;
             }
             else if (size.Equals(medium))
             {
-                return PlanetSizeTypes.MEDIUM;
+                return SizeTypes.MEDIUM;
             }
             else if (size.Equals(giant))
             {
-                return PlanetSizeTypes.GIANT;
+                return SizeTypes.GIANT;
             }
             else
             {
@@ -132,14 +112,14 @@ namespace StarPlan.Models.Space.Planets
         }
         public static Point GetRegionsRange(Planet planet) {
 
-            PlanetSizeTypes size = GetPlanetSize(planet);
+            SizeTypes size = GetPlanetSize(planet);
             switch (size)
             {
-                case PlanetSizeTypes.DWARF:
+                case SizeTypes.DWARF:
                     return new Point(2, 3);
-                case PlanetSizeTypes.MEDIUM:
+                case SizeTypes.MEDIUM:
                     return new Point(4, 6);
-                case PlanetSizeTypes.GIANT:
+                case SizeTypes.GIANT:
                     return new Point(7, 15);
                 default:
                     throw new NotImplementedException("the planet is not implemented yet");
@@ -147,38 +127,38 @@ namespace StarPlan.Models.Space.Planets
         }
         public static int GetPlanetPerkNumber(Planet planet)
         {
-            PlanetSizeTypes size = GetPlanetSize(planet);
+            SizeTypes size = GetPlanetSize(planet);
             switch (size)
             {
-                case PlanetSizeTypes.DWARF:
+                case SizeTypes.DWARF:
                     return 1;
-                case PlanetSizeTypes.MEDIUM:
+                case SizeTypes.MEDIUM:
                     return 3;
-                case PlanetSizeTypes.GIANT:
+                case SizeTypes.GIANT:
                     return 6;
                 default:
                     throw new NotImplementedException("the planet is not implemented yet");
             }
         }
-        public static PlanetSizeTypes GetPlanetSize(Planet planet) {
+        public static SizeTypes GetPlanetSize(Planet planet) {
             try
             {
                 DwarfPlanet dwarfPlanet = (DwarfPlanet)planet;
-                return PlanetSizeTypes.DWARF;
+                return SizeTypes.DWARF;
             }
             catch (InvalidCastException ice)
             {
                 try
                 {
                     MediumPlanet mediumPlanet = (MediumPlanet)planet;
-                    return PlanetSizeTypes.MEDIUM;
+                    return SizeTypes.MEDIUM;
                 }
                 catch (InvalidCastException ice_)
                 {
                     try
                     {
                         GiantPlanet giantPlanet = (GiantPlanet)planet;
-                        return PlanetSizeTypes.GIANT;
+                        return SizeTypes.GIANT;
                     }
                     catch (InvalidCastException ice__)
                     {
@@ -226,7 +206,9 @@ namespace StarPlan.Models.Space.Planets
 
         public void GetFromDB(SqlDataReader reader) 
         {
-            string name = reader.GetString("name");
+            string name = (string)RecordAccess.GetFeildFromReader(
+                Planet.GetFeildNames(Planet.FeildType.NAME), reader);
+
             Init(name);
         }
 

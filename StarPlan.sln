@@ -15,9 +15,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "App Logic", "App Logic", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTesting", "IntegrationTesting\IntegrationTesting.csproj", "{CDD859F7-4398-4FF0-9C0E-DECE7531513F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AidansORM", "AidansORM\AidansORM.csproj", "{FCC5CEF8-0631-44EF-9E7D-2070F9A57856}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StarPlanDBAccess", "AidansORM\StarPlanDBAccess.csproj", "{FCC5CEF8-0631-44EF-9E7D-2070F9A57856}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StarPlan", "StarPlan\StarPlan.csproj", "{E2168522-AF72-4D0B-B8C0-26C7E7921A82}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StarPlan", "StarPlan\StarPlan.csproj", "{E2168522-AF72-4D0B-B8C0-26C7E7921A82}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

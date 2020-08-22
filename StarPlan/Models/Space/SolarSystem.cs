@@ -3,11 +3,33 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
+using StarPlanDBAccess.Exceptions;
+using StarPlanDBAccess.ORM;
 
 namespace StarPlan.Models
 {
     public class SolarSystem
     {
+        #region DB Feilds
+        public enum FeildType
+        {
+            ID
+        }
+
+        public static string[] GetFeildNames(FeildType feild)
+        {
+            if (feild == FeildType.ID)
+            {
+                return new string[] { "id", "solarSystemId", "systemId" };
+            }
+            else
+            {
+                throw new FeildNotFound();
+            }
+        }
+
+        #endregion
+
         private int id;
         private PlanetList planets;
 

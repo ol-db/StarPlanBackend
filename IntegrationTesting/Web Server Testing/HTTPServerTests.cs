@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WebServer.HTTP;
 using WebServer.HTTP.Routing;
 
-namespace UnitAndIntegrationTesting.Web_Server_Testing
+namespace IntegrationTesting.Web_Server_Testing
 {
     [TestClass]
     public class HTTPServerTests
@@ -47,7 +47,7 @@ namespace UnitAndIntegrationTesting.Web_Server_Testing
             Server.Listen();
 
             HttpClient client = new HttpClient();
-
+            
             var result = await client.GetAsync("http://192.168.1.165:3000/school/pupils");
             string content = await result.Content.ReadAsStringAsync();
 

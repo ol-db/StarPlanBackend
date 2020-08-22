@@ -6,6 +6,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Text;
+using StarPlanDBAccess.ORM;
 
 namespace StarPlan.Models.Space.Planets
 {
@@ -66,7 +67,8 @@ namespace StarPlan.Models.Space.Planets
                     {
                         while (reader.Read())
                         {
-                            int id = reader.GetInt32("id");
+                            int id = (int)RecordAccess.GetFeildFromReader(
+                                Region.GetFeildNames(Region.FeildType.ID), reader);
 
                             Add(new Region(id)).GetFromDB(reader);
                         }

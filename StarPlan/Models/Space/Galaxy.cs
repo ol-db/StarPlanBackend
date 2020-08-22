@@ -5,11 +5,44 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Text;
+using StarPlan.DataAccess;
+using StarPlanDBAccess.Exceptions;
+using StarPlanDBAccess.ORM;
 
 namespace StarPlan.Models
 {
     public class Galaxy
     {
+        #region DB Feilds
+        public enum FeildType
+        {
+            ID,
+            NAME,
+            DESC
+        }
+
+        public static string[] GetFeildNames(FeildType feild)
+        {
+            if (feild == FeildType.ID)
+            {
+                return new string[] { "id", "regionId" };
+            }
+            else if (feild == FeildType.NAME)
+            {
+                return new string[] { "name", "regionName" };
+            }
+            else if (feild == FeildType.DESC)
+            {
+                return new string[] { "desc", "galaxyDesc", "description", "galaxyDescription" };
+            }
+            else
+            {
+                throw new FeildNotFound();
+            }
+        }
+
+        #endregion
+
         private int id;
         private string name;
         private string desc;
@@ -45,11 +78,16 @@ namespace StarPlan.Models
                     cmd.CommandType = CommandType.StoredProcedure;
 
 
+                    //<todo>
+                    //  collect params info
+                    //</todo>
+                    SqlCommandBuilder.DeriveParameters(cmd);
 
                     ///catch any SQL error
                     ///so changes to class
                     ///can be reverted
                     ///to keep data consistent
+
                     cmd.Parameters.Add("@id", SqlDbType.Int).Value = GetId();
                     cmd.Parameters.Add("@name", SqlDbType.VarChar).Value = GetName();
                     cmd.Parameters.Add("@desc", SqlDbType.VarChar).Value = GetDesc();
@@ -84,8 +122,11 @@ namespace StarPlan.Models
         /// <param name="reader"></param>
         public void GetFromDB(SqlDataReader reader)
         {
-            string name = reader.GetString("name");
-            string desc = reader.GetString("description");
+            string name = SpaceAccess.GetGalaxyFeild_FromReader(
+                Galaxy.FeildType.NAME, reader);
+            string desc = SpaceAccess.GetGalaxyFeild_FromReader(
+                Galaxy.FeildType.DESC, reader);
+
             Init(name, desc);
         }
 

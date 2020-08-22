@@ -5,11 +5,38 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Text;
+using StarPlanDBAccess.Exceptions;
+using StarPlanDBAccess.ORM;
 
 namespace StarPlan.Models.Space.Planets
 {
     public class Region
     {
+        #region DB Feilds
+        public enum FeildType
+        {
+            ID,
+            NAME
+        }
+
+        public static string[] GetFeildNames(FeildType feild)
+        {
+            if (feild == FeildType.ID)
+            {
+                return new string[] { "id", "regionId" };
+            }
+            else if (feild == FeildType.NAME)
+            {
+                return new string[] { "name", "regionName" };
+            }
+            else
+            {
+                throw new FeildNotFound();
+            }
+        }
+
+        #endregion
+
         private int id;
         private string name;
 
@@ -52,7 +79,8 @@ namespace StarPlan.Models.Space.Planets
 
         public void GetFromDB(SqlDataReader reader)
         {
-            string name = reader.GetString("name");
+            string name = (string)RecordAccess.GetFeildFromReader(
+                Region.GetFeildNames(Region.FeildType.ID), reader);
 
             Init(name);
         }

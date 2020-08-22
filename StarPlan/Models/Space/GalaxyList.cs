@@ -4,6 +4,8 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 using StarPlan.Exceptions.GalaxyExceptions;
+using StarPlanDBAccess.ORM;
+using StarPlan.DataAccess;
 
 namespace StarPlan.Models
 {
@@ -54,7 +56,10 @@ namespace StarPlan.Models
                     {
                         while (reader.Read())
                         {
-                            int id = reader.GetInt32("id");
+                            //get feild
+                            int id = SpaceAccess.GetGalaxyFeild_FromReader(
+                                Galaxy.FeildType.ID, reader);
+
                             Add(new Galaxy(id)).GetFromDB(reader);
                         }
                     }

@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 using StarPlanDBAccess.ORM;
+using StarPlan.DataAccess;
 
 namespace StarPlan.Models.Space.Planets
 {
@@ -39,7 +40,14 @@ namespace StarPlan.Models.Space.Planets
             {
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                cmd.Parameters.Add("@systemId", SqlDbType.Int).Value = GetSolarSystemId();
+                //get param info for proc
+                SqlCommandBuilder.DeriveParameters(cmd);
+
+                //set param
+                SpaceAccess.SetSolarSystemParam(
+                    new Tuple<object, SolarSystem.FeildType>(
+                        GetSolarSystemId(), SolarSystem.FeildType.ID),
+                    cmd.Parameters);
 
                 try
                 {
@@ -48,10 +56,10 @@ namespace StarPlan.Models.Space.Planets
                     {
                         while (reader.Read())
                         {
-                            int id = (int)RecordAccess.GetFeildFromReader(
-                                Planet.GetFeildNames(Planet.FeildType.ID),reader);
-                            string size = (string)RecordAccess.GetFeildFromReader(
-                                Planet.GetFeildNames(Planet.FeildType.SIZE), reader);
+                            int id = SpaceAccess.GetPlanetFeild_FromReader(
+                                Planet.FeildType.ID,reader);
+                            string size = SpaceAccess.GetPlanetFeild_FromReader(
+                                Planet.FeildType.SIZE,reader);
                             
                             Add(PlanetFactory.GetPlanetFromSize(id, size)).GetFromDB(reader);
                         }

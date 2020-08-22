@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.Text;
 using StarPlanDBAccess.ORM;
+using StarPlan.DataAccess;
 
 namespace StarPlan.Models.Space.Planets
 {
@@ -58,7 +59,14 @@ namespace StarPlan.Models.Space.Planets
             {
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                cmd.Parameters.Add("@planetId", SqlDbType.Int).Value = GetPlanetId();
+                //get param info
+                SqlCommandBuilder.DeriveParameters(cmd);
+
+                //set params
+                SpaceAccess.SetPlanetParam(
+                    new Tuple<object, Planet.FeildType>(GetPlanetId(), Planet.FeildType.ID),
+                    cmd.Parameters
+                    );
 
                 try
                 {
@@ -67,15 +75,13 @@ namespace StarPlan.Models.Space.Planets
                     {
                         while (reader.Read())
                         {
-                            int id = (int)RecordAccess.GetFeildFromReader(
-                                Region.GetFeildNames(Region.FeildType.ID), reader);
+                            int id = SpaceAccess.GetRegionFeild_FromReader(
+                                Region.FeildType.ID, reader);
 
                             Add(new Region(id)).GetFromDB(reader);
                         }
 
                         //checks bounds
-                        //makes sure region count
-                        //doesn't exceed the declared bounds
                         VerifyBounds();
                     }
                     else

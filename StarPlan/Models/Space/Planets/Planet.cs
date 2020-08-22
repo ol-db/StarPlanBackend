@@ -9,6 +9,7 @@ using System.Text;
 using System.Data;
 using StarPlanDBAccess.Exceptions;
 using StarPlanDBAccess.ORM;
+using StarPlan.DataAccess;
 
 namespace StarPlan.Models.Space.Planets
 {
@@ -206,8 +207,8 @@ namespace StarPlan.Models.Space.Planets
 
         public void GetFromDB(SqlDataReader reader) 
         {
-            string name = (string)RecordAccess.GetFeildFromReader(
-                Planet.GetFeildNames(Planet.FeildType.NAME), reader);
+            string name = SpaceAccess.GetPlanetFeild_FromReader(
+                Planet.FeildType.NAME, reader);
 
             Init(name);
         }
@@ -238,10 +239,17 @@ namespace StarPlan.Models.Space.Planets
                     ///so changes to class
                     ///can be reverted
                     ///to keep data consistent
-                    cmd.Parameters.Add("@id", SqlDbType.Int).Value = GetId();
-                    cmd.Parameters.Add("@name", SqlDbType.VarChar).Value = GetName();
-                    cmd.Parameters.Add("@size", SqlDbType.VarChar).Value =
-                        PlanetSizeTypeToString(GetPlanetSize(this));
+
+                    //get params from proc
+                    SqlCommandBuilder.DeriveParameters(cmd);
+
+                    SpaceAccess.SetPlanetParams(
+                        new List<Tuple<object, Planet.FeildType>>() {
+                            new Tuple<object, Planet.FeildType>(GetId(), Planet.FeildType.ID),
+                            new Tuple<object, Planet.FeildType>(GetName(),Planet.FeildType.NAME),
+                            new Tuple<object, Planet.FeildType>(PlanetSizeTypeToString(GetPlanetSize(this)), Planet.FeildType.SIZE)
+                        },
+                        cmd.Parameters);
 
                     conn.Open();
                     cmd.ExecuteNonQuery();

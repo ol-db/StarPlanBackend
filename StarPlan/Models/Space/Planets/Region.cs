@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Text;
+using StarPlan.DataAccess;
 using StarPlanDBAccess.Exceptions;
 using StarPlanDBAccess.ORM;
 
@@ -79,8 +80,8 @@ namespace StarPlan.Models.Space.Planets
 
         public void GetFromDB(SqlDataReader reader)
         {
-            string name = (string)RecordAccess.GetFeildFromReader(
-                Region.GetFeildNames(Region.FeildType.ID), reader);
+            string name = SpaceAccess.GetRegionFeild_FromReader(
+                Region.FeildType.NAME, reader);
 
             Init(name);
         }
@@ -103,14 +104,21 @@ namespace StarPlan.Models.Space.Planets
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
 
-
+                    SqlCommandBuilder.DeriveParameters(cmd);
 
                     ///catch any SQL error
                     ///so changes to class
                     ///can be reverted
                     ///to keep data consistent
-                    cmd.Parameters.Add("@id", SqlDbType.Int).Value = GetId();
-                    cmd.Parameters.Add("@name", SqlDbType.VarChar).Value = GetName();
+
+                    SpaceAccess.SetRegionParams(
+                        new List<Tuple<object, FeildType>>
+                        {
+                            new Tuple<object, FeildType>(GetId(),FeildType.ID),
+                            new Tuple<object, FeildType>(GetName(),FeildType.NAME)
+                        },
+                        cmd.Parameters
+                        );
 
                     conn.Open();
                     cmd.ExecuteNonQuery();

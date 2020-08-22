@@ -1,4 +1,5 @@
-﻿using StarPlan.Exceptions.SolarSystemExceptions;
+﻿using StarPlan.DataAccess;
+using StarPlan.Exceptions.SolarSystemExceptions;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -53,7 +54,13 @@ namespace StarPlan.Models
             {
                 cmd.CommandType = CommandType.StoredProcedure;
 
-                cmd.Parameters.Add("@galaxyId", SqlDbType.Int).Value = GetGalaxyId();
+                SqlCommandBuilder.DeriveParameters(cmd);
+
+                SpaceAccess.SetGalaxyParam
+                (
+                    new Tuple<object, Galaxy.FeildType>(GetGalaxyId(),Galaxy.FeildType.ID),
+                    cmd.Parameters
+                );
 
                 try
                 {
@@ -62,7 +69,13 @@ namespace StarPlan.Models
                     {
                         while (reader.Read())
                         {
-                            int id = reader.GetInt32("id");
+
+                            SpaceAccess.GetSolarSystemFeild_FromReader
+                            (
+                                SolarSystem.FeildType.ID,
+                                reader
+                            );
+
                             Add(new SolarSystem(id));
                         }
                     }
@@ -117,13 +130,6 @@ namespace StarPlan.Models
         #region init
         private void Init(int galaxyId) {
             this.solarSystems = new List<SolarSystem>();
-            SetGalaxyId(galaxyId);
-        }
-        #endregion
-
-        #region edit
-        private void Edit(int galaxyId)
-        {
             SetGalaxyId(galaxyId);
         }
         #endregion

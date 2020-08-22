@@ -88,9 +88,15 @@ namespace StarPlan.Models
                     ///can be reverted
                     ///to keep data consistent
 
-                    cmd.Parameters.Add("@id", SqlDbType.Int).Value = GetId();
-                    cmd.Parameters.Add("@name", SqlDbType.VarChar).Value = GetName();
-                    cmd.Parameters.Add("@desc", SqlDbType.VarChar).Value = GetDesc();
+                    SpaceAccess.SetGalaxyParams(
+                        new List<Tuple<object, FeildType>>
+                        {
+                            new Tuple<object, FeildType>(GetId(),FeildType.ID),
+                            new Tuple<object, FeildType>(GetName(),FeildType.NAME),
+                            new Tuple<object, FeildType>(GetDesc(),FeildType.DESC)
+                        },
+                        cmd.Parameters
+                        );
 
                     conn.Open();
                     cmd.ExecuteNonQuery();

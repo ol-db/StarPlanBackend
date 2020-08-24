@@ -10,6 +10,7 @@ using System.Data;
 using StarPlanDBAccess.Exceptions;
 using StarPlanDBAccess.ORM;
 using StarPlan.DataAccess;
+using StarPlanDBAccess.Procedures;
 
 namespace StarPlan.Models.Space.Planets
 {
@@ -205,7 +206,7 @@ namespace StarPlan.Models.Space.Planets
 
         #region DB methods
 
-        public void GetFromDB(SqlDataReader reader) 
+        public void GetFromDB(IDataReader reader) 
         {
             string name = SpaceAccess.GetPlanetFeild_FromReader(
                 Planet.FeildType.NAME, reader);
@@ -217,7 +218,7 @@ namespace StarPlan.Models.Space.Planets
         /// <todo>
         /// update size
         /// </todo>
-        public void EditInDB(string name,SqlConnection conn)
+        public void EditInDB(string name,ISqlStoredProc proc)
         {
             ///get name in case changes need to
             ///be reverted because of
@@ -229,33 +230,20 @@ namespace StarPlan.Models.Space.Planets
 
             try
             {
-                using (SqlCommand cmd = new SqlCommand("EditPlanet", conn))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
+                proc.SetProcName("EditPlanet");
+                SqlCommand cmd = proc.GetCmd();
 
+                SpaceAccess.SetPlanetParams
+                (
+                    new List<Tuple<object, Planet.FeildType>>() {
+                        new Tuple<object, Planet.FeildType>(GetId(), Planet.FeildType.ID),
+                        new Tuple<object, Planet.FeildType>(GetName(),Planet.FeildType.NAME),
+                        new Tuple<object, Planet.FeildType>(PlanetSizeTypeToString(GetPlanetSize(this)), Planet.FeildType.SIZE)
+                    },
+                    cmd.Parameters
+                );
 
-
-                    ///catch any SQL error
-                    ///so changes to class
-                    ///can be reverted
-                    ///to keep data consistent
-
-                    //get params from proc
-                    SqlCommandBuilder.DeriveParameters(cmd);
-
-                    SpaceAccess.SetPlanetParams(
-                        new List<Tuple<object, Planet.FeildType>>() {
-                            new Tuple<object, Planet.FeildType>(GetId(), Planet.FeildType.ID),
-                            new Tuple<object, Planet.FeildType>(GetName(),Planet.FeildType.NAME),
-                            new Tuple<object, Planet.FeildType>(PlanetSizeTypeToString(GetPlanetSize(this)), Planet.FeildType.SIZE)
-                        },
-                        cmd.Parameters);
-
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
-                    conn.Close();
-
-                }
+                proc.ExcecSql();
             }
             catch (Exception se)
             {

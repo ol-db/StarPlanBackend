@@ -48,43 +48,38 @@ namespace StarPlan.Models.Space.Planets
 
         #region DB methods
 
-        public void LoadMapFromDB(SqlStoredProc proc)
+        public void LoadMapFromDB(ISqlStoredProc proc)
         {
             GetAllFromDB(proc);
         }
 
-        public void GetAllFromDB(SqlStoredProc proc)
+        public void GetAllFromDB(ISqlStoredProc proc)
         {
             proc.SetProcName("LoadRegions");
 
             SqlCommand cmd = proc.GetCmd();
 
             //set params
-            SpaceAccess.SetPlanetParam(
+            SpaceAccess.SetPlanetParam
+            (
                 new Tuple<object, Planet.FeildType>(GetPlanetId(), Planet.FeildType.ID),
                 cmd.Parameters
-                );
+            );
 
             try
             {
-                SqlDataReader reader = cmd.ExecuteReader();
-                if (reader.HasRows)
+                IDataReader reader = proc.ExcecRdr();
+                while (reader.Read())
                 {
-                    while (reader.Read())
-                    {
-                        int id = SpaceAccess.GetRegionFeild_FromReader(
-                            Region.FeildType.ID, reader);
+                    int id = SpaceAccess.GetRegionFeild_FromReader(
+                        Region.FeildType.ID, reader);
 
-                        Add(new Region(id)).GetFromDB(reader);
-                    }
+                    Add(new Region(id)).GetFromDB(reader);
+                }
 
-                    //checks bounds
-                    VerifyBounds();
-                }
-                else
-                {
-                    //no planets exist
-                }
+                //checks bounds
+                VerifyBounds();
+
                 reader.Close();
             }
             catch (SqlException se)

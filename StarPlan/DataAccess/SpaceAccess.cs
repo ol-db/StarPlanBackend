@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 using StarPlan.Models;
@@ -11,22 +12,22 @@ namespace StarPlan.DataAccess
     public class SpaceAccess
     {
         #region get feild from data reader
-        public static dynamic GetRegionFeild_FromReader(Region.FeildType feild, SqlDataReader rdr)
+        public static dynamic GetRegionFeild_FromReader(Region.FeildType feild, IDataReader rdr)
         {
             return RecordAccess.GetFeildFromReader(Region.GetFeildNames(feild), rdr);
         }
 
-        public static dynamic GetPlanetFeild_FromReader(Planet.FeildType feild,SqlDataReader rdr)
+        public static dynamic GetPlanetFeild_FromReader(Planet.FeildType feild, IDataReader rdr)
         {
             return RecordAccess.GetFeildFromReader(Planet.GetFeildNames(feild), rdr);
         }
 
-        public static dynamic GetSolarSystemFeild_FromReader(SolarSystem.FeildType feild, SqlDataReader rdr)
+        public static dynamic GetSolarSystemFeild_FromReader(SolarSystem.FeildType feild, IDataReader rdr)
         {
             return RecordAccess.GetFeildFromReader(SolarSystem.GetFeildNames(feild), rdr);
         }
 
-        public static dynamic GetGalaxyFeild_FromReader(Galaxy.FeildType feild, SqlDataReader rdr)
+        public static dynamic GetGalaxyFeild_FromReader(Galaxy.FeildType feild, IDataReader rdr)
         {
             return RecordAccess.GetFeildFromReader(Galaxy.GetFeildNames(feild), rdr);
         }

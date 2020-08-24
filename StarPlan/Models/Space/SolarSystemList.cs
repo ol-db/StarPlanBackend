@@ -33,7 +33,7 @@ namespace StarPlan.Models
 
         #region DB methods
 
-        public void LoadMapFromDB(SqlStoredProc proc)
+        public void LoadMapFromDB(ISqlStoredProc proc)
         {
             GetAllFromDB(proc);
             foreach (SolarSystem solarSystem in solarSystems)
@@ -48,7 +48,7 @@ namespace StarPlan.Models
         ///     galaxy
         /// </summary>
         /// <param name="conn"></param>
-        public void GetAllFromDB(SqlStoredProc proc)
+        public void GetAllFromDB(ISqlStoredProc proc)
         {
             proc.SetProcName("LoadSolarSystems");
             SqlCommand cmd = proc.GetCmd();
@@ -61,24 +61,17 @@ namespace StarPlan.Models
 
             try
             {
-                SqlDataReader reader = cmd.ExecuteReader();
-                if (reader.HasRows)
+                IDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
                 {
-                    while (reader.Read())
-                    {
 
-                        int id = SpaceAccess.GetSolarSystemFeild_FromReader
-                        (
-                            SolarSystem.FeildType.ID,
-                            reader
-                        );
+                    int id = SpaceAccess.GetSolarSystemFeild_FromReader
+                    (
+                        SolarSystem.FeildType.ID,
+                        reader
+                    );
 
-                        Add(new SolarSystem(id));
-                    }
-                }
-                else
-                {
-                    //no solar systems exist
+                    Add(new SolarSystem(id));
                 }
                 reader.Close();
             }

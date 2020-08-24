@@ -10,5 +10,7 @@ namespace StarPlanDBAccess.Procedures
     {
         SqlCommand GetCmd();
         IDataReader ExcecRdr();
+        void ExcecSql();
+        void SetProcName(string procName);
     }
 }

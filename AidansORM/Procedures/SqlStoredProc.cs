@@ -34,6 +34,11 @@ namespace StarPlanDBAccess.Procedures
             return this.cmd.ExecuteReader();
         }
 
+        public void ExcecSql()
+        {
+            this.cmd.ExecuteNonQuery();
+        }
+
         public void SetProcName(string procName)
         {
             cmd.CommandText = procName;

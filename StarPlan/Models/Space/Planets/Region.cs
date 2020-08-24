@@ -8,6 +8,7 @@ using System.Text;
 using StarPlan.DataAccess;
 using StarPlanDBAccess.Exceptions;
 using StarPlanDBAccess.ORM;
+using StarPlanDBAccess.Procedures;
 
 namespace StarPlan.Models.Space.Planets
 {
@@ -78,7 +79,7 @@ namespace StarPlan.Models.Space.Planets
 
         #region DB methods
 
-        public void GetFromDB(SqlDataReader reader)
+        public void GetFromDB(IDataReader reader)
         {
             string name = SpaceAccess.GetRegionFeild_FromReader(
                 Region.FeildType.NAME, reader);
@@ -88,7 +89,7 @@ namespace StarPlan.Models.Space.Planets
 
         #region edit
 
-        public void EditInDB(string name, SqlConnection conn)
+        public void EditInDB(string name, ISqlStoredProc proc)
         {
             ///get name in case changes need to
             ///be reverted because of
@@ -98,33 +99,22 @@ namespace StarPlan.Models.Space.Planets
             string lastName = GetName();
             SetName(name);
 
+            SqlCommand cmd = proc.GetCmd();
+
             try
             {
-                using (SqlCommand cmd = new SqlCommand("EditRegion", conn))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
 
-                    SqlCommandBuilder.DeriveParameters(cmd);
+                proc.SetProcName("EditRegion");
 
-                    ///catch any SQL error
-                    ///so changes to class
-                    ///can be reverted
-                    ///to keep data consistent
-
-                    SpaceAccess.SetRegionParams(
-                        new List<Tuple<object, FeildType>>
-                        {
-                            new Tuple<object, FeildType>(GetId(),FeildType.ID),
-                            new Tuple<object, FeildType>(GetName(),FeildType.NAME)
-                        },
-                        cmd.Parameters
-                        );
-
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
-                    conn.Close();
-
-                }
+                SpaceAccess.SetRegionParams(
+                    new List<Tuple<object, FeildType>>
+                    {
+                        new Tuple<object, FeildType>(GetId(),FeildType.ID),
+                        new Tuple<object, FeildType>(GetName(),FeildType.NAME)
+                    },
+                    cmd.Parameters
+                    );
+                proc.ExcecSql();
             }
             catch (Exception se)
             {

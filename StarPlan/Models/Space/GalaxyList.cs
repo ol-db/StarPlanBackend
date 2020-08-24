@@ -33,7 +33,7 @@ namespace StarPlan.Models
         /// </summary>
         /// <param name="conn"></param>
 
-        public void LoadMapFromDB(SqlStoredProc proc)
+        public void LoadMapFromDB(ISqlStoredProc proc)
         {
             GetAllFromDB(proc);
             foreach (Galaxy galaxy in galaxies)
@@ -42,31 +42,26 @@ namespace StarPlan.Models
             }
         }
 
-        public void GetAllFromDB(SqlStoredProc proc)
+        public void GetAllFromDB(ISqlStoredProc proc)
         {
             proc.SetProcName("LoadGalaxies");
             SqlCommand cmd = proc.GetCmd();
 
             try
             {
-                SqlDataReader reader = cmd.ExecuteReader();
-                if (reader.HasRows)
-                {
-                    while (reader.Read())
-                    {
-                        //get galaxy id
-                        int id = SpaceAccess.GetGalaxyFeild_FromReader(
-                            Galaxy.FeildType.ID, reader);
+                IDataReader reader = cmd.ExecuteReader();
 
-                        //add new galaxy
-                        //then populate galaxy from DB
-                        Add(new Galaxy(id)).GetFromDB(reader);
-                    }
-                }
-                else
+                while (reader.Read())
                 {
-                    //no galaxies exist
+                    //get galaxy id
+                    int id = SpaceAccess.GetGalaxyFeild_FromReader(
+                        Galaxy.FeildType.ID, reader);
+
+                    //add new galaxy
+                    //then populate galaxy from DB
+                    Add(new Galaxy(id)).GetFromDB(reader);
                 }
+
                 reader.Close();
             }
             catch (SqlException se)

@@ -8,6 +8,7 @@ using System.Text;
 using StarPlan.DataAccess;
 using StarPlanDBAccess.Exceptions;
 using StarPlanDBAccess.ORM;
+using StarPlanDBAccess.Procedures;
 
 namespace StarPlan.Models
 {
@@ -63,7 +64,7 @@ namespace StarPlan.Models
 
         #region edit methods
 
-        public void EditInDB(string name, string desc,SqlConnection conn) {
+        public void EditInDB(string name, string desc,ISqlStoredProc proc) {
 
             string lastDesc = GetDesc();
             string lastName = GetName();
@@ -73,36 +74,27 @@ namespace StarPlan.Models
 
             try
             {
-                using (SqlCommand cmd = new SqlCommand("EditGalaxy", conn))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
 
+                proc.SetProcName("EditGalaxy");
 
-                    //<todo>
-                    //  collect params info
-                    //</todo>
-                    SqlCommandBuilder.DeriveParameters(cmd);
+                SqlCommand cmd = proc.GetCmd();
 
-                    ///catch any SQL error
-                    ///so changes to class
-                    ///can be reverted
-                    ///to keep data consistent
+                ///catch any SQL error
+                ///so changes can be undone
 
-                    SpaceAccess.SetGalaxyParams(
-                        new List<Tuple<object, FeildType>>
-                        {
-                            new Tuple<object, FeildType>(GetId(),FeildType.ID),
-                            new Tuple<object, FeildType>(GetName(),FeildType.NAME),
-                            new Tuple<object, FeildType>(GetDesc(),FeildType.DESC)
-                        },
-                        cmd.Parameters
-                        );
+                SpaceAccess.SetGalaxyParams
+                (
+                    new List<Tuple<object, FeildType>>
+                    {
+                        new Tuple<object, FeildType>(GetId(),FeildType.ID),
+                        new Tuple<object, FeildType>(GetName(),FeildType.NAME),
+                        new Tuple<object, FeildType>(GetDesc(),FeildType.DESC)
+                    },
+                    cmd.Parameters
+                );
 
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
-                    conn.Close();
+                proc.ExcecSql();
 
-                }
             }
             catch (Exception se)
             {
@@ -126,7 +118,7 @@ namespace StarPlan.Models
         ///     into class object
         /// </summary>
         /// <param name="reader"></param>
-        public void GetFromDB(SqlDataReader reader)
+        public void GetFromDB(IDataReader reader)
         {
             string name = SpaceAccess.GetGalaxyFeild_FromReader(
                 Galaxy.FeildType.NAME, reader);

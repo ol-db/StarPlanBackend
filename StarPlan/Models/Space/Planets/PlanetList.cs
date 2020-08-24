@@ -25,7 +25,7 @@ namespace StarPlan.Models.Space.Planets
 
         #region DB methods
 
-        public void LoadMapFromDB(SqlStoredProc proc)
+        public void LoadMapFromDB(ISqlStoredProc proc)
         {
             GetAllFromDB(proc);
             foreach (Planet planet in planets)
@@ -34,7 +34,7 @@ namespace StarPlan.Models.Space.Planets
             }
         }
 
-        public void GetAllFromDB(SqlStoredProc proc)
+        public void GetAllFromDB(ISqlStoredProc proc)
         {
             proc.SetProcName("LoadPlanets");
             SqlCommand cmd = proc.GetCmd();

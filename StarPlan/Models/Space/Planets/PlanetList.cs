@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Text;
 using StarPlanDBAccess.ORM;
 using StarPlan.DataAccess;
+using StarPlanDBAccess.Procedures;
 
 namespace StarPlan.Models.Space.Planets
 {
@@ -24,56 +25,44 @@ namespace StarPlan.Models.Space.Planets
 
         #region DB methods
 
-        public void LoadMapFromDB(SqlConnection conn)
+        public void LoadMapFromDB(SqlStoredProc proc)
         {
-            GetAllFromDB(conn);
+            GetAllFromDB(proc);
             foreach (Planet planet in planets)
             {
-                planet.GetRegions().LoadMapFromDB(conn);
+                planet.GetRegions().LoadMapFromDB(proc);
             }
         }
 
-        public void GetAllFromDB(SqlConnection conn)
+        public void GetAllFromDB(SqlStoredProc proc)
         {
+            proc.SetProcName("LoadPlanets");
+            SqlCommand cmd = proc.GetCmd();
 
-            using (SqlCommand cmd = new SqlCommand("LoadPlanets", conn))
+            //set param
+            SpaceAccess.SetSolarSystemParam(
+                new Tuple<object, SolarSystem.FeildType>(
+                    GetSolarSystemId(), SolarSystem.FeildType.ID),
+                cmd.Parameters);
+
+            try
             {
-                cmd.CommandType = CommandType.StoredProcedure;
+                IDataReader reader = proc.ExcecRdr();
 
-                //get param info for proc
-                SqlCommandBuilder.DeriveParameters(cmd);
-
-                //set param
-                SpaceAccess.SetSolarSystemParam(
-                    new Tuple<object, SolarSystem.FeildType>(
-                        GetSolarSystemId(), SolarSystem.FeildType.ID),
-                    cmd.Parameters);
-
-                try
+                while (reader.Read())
                 {
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            int id = SpaceAccess.GetPlanetFeild_FromReader(
-                                Planet.FeildType.ID,reader);
-                            string size = SpaceAccess.GetPlanetFeild_FromReader(
-                                Planet.FeildType.SIZE,reader);
-                            
-                            Add(PlanetFactory.GetPlanetFromSize(id, size)).GetFromDB(reader);
-                        }
-                    }
-                    else
-                    {
-                        //no planets exist
-                    }
-                    reader.Close();
+                    int id = SpaceAccess.GetPlanetFeild_FromReader(
+                        Planet.FeildType.ID, reader);
+                    string size = SpaceAccess.GetPlanetFeild_FromReader(
+                        Planet.FeildType.SIZE, reader);
+
+                    Add(PlanetFactory.GetPlanetFromSize(id, size)).GetFromDB(reader);
                 }
-                catch (SqlException se)
-                {
-                    throw new InvalidOperationException("something went wrong");
-                }
+                reader.Close();
+            }
+            catch (Exception se)
+            {
+                throw new InvalidOperationException("something went wrong");
             }
         }
 

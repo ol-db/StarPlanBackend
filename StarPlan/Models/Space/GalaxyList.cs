@@ -6,6 +6,7 @@ using System.Text;
 using StarPlan.Exceptions.GalaxyExceptions;
 using StarPlanDBAccess.ORM;
 using StarPlan.DataAccess;
+using StarPlanDBAccess.Procedures;
 
 namespace StarPlan.Models
 {
@@ -32,47 +33,45 @@ namespace StarPlan.Models
         /// </summary>
         /// <param name="conn"></param>
 
-        public void LoadMapFromDB(SqlConnection conn)
+        public void LoadMapFromDB(SqlStoredProc proc)
         {
-            GetAllFromDB(conn);
+            GetAllFromDB(proc);
             foreach (Galaxy galaxy in galaxies)
             {
-                galaxy.GetSolarSystems().LoadMapFromDB(conn);
+                galaxy.GetSolarSystems().LoadMapFromDB(proc);
             }
         }
 
-        public void GetAllFromDB(SqlConnection conn)
+        public void GetAllFromDB(SqlStoredProc proc)
         {
-            //gets denormalised database to read
-            //with all galaxies, solar systems, planets and regions
-            using (SqlCommand cmd = new SqlCommand("LoadGalaxies", conn))
+            proc.SetProcName("LoadGalaxies");
+            SqlCommand cmd = proc.GetCmd();
+
+            try
             {
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                try
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.HasRows)
                 {
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    if (reader.HasRows)
+                    while (reader.Read())
                     {
-                        while (reader.Read())
-                        {
-                            //get feild
-                            int id = SpaceAccess.GetGalaxyFeild_FromReader(
-                                Galaxy.FeildType.ID, reader);
+                        //get galaxy id
+                        int id = SpaceAccess.GetGalaxyFeild_FromReader(
+                            Galaxy.FeildType.ID, reader);
 
-                            Add(new Galaxy(id)).GetFromDB(reader);
-                        }
+                        //add new galaxy
+                        //then populate galaxy from DB
+                        Add(new Galaxy(id)).GetFromDB(reader);
                     }
-                    else
-                    {
-                        //no galaxies exist
-                    }
-                    reader.Close();
                 }
-                catch (SqlException se)
+                else
                 {
-                    throw new InvalidOperationException("something went wrong");
+                    //no galaxies exist
                 }
+                reader.Close();
+            }
+            catch (SqlException se)
+            {
+                throw new InvalidOperationException("something went wrong");
             }
         }
 

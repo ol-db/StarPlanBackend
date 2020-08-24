@@ -7,6 +7,10 @@ using System.Text;
 using StarPlan.Models.Perks;
 using System.Diagnostics;
 using StarPlan.Exceptions.RegionExceptions;
+using System.Data.SqlClient;
+using Moq;
+using System.Data;
+using StarPlanDBAccess.Procedures;
 
 namespace UnitTesting.Star_Plan_Logic_Testing.Space_Logic_Testing
 {
@@ -94,6 +98,40 @@ namespace UnitTesting.Star_Plan_Logic_Testing.Space_Logic_Testing
                 Debug.Write(ae.Message);
             }
         }
+
+        #endregion
+
+        #region DB methods
+
+        [TestMethod]
+        public void fdsafsda()
+        {
+            Mock<ISqlStoredProc> mockStoredProc = new Mock<ISqlStoredProc>(MockBehavior.Loose);
+
+            SqlCommand cmd = new SqlCommand();
+
+            cmd.Parameters.Add("foo", SqlDbType.Int);
+            cmd.Parameters.Add("bar", SqlDbType.Int);
+
+            Mock<IDataReader> mockReader = new Mock<IDataReader>();
+            mockReader.Setup(x => x["id"]).Returns(0);
+            mockReader.Setup(x => x["name"]).Returns("hello");
+            mockReader.Setup(x => x["size"]).Returns("dwarf");
+
+            IDataReader rdr = mockReader.Object;
+
+            mockStoredProc.Setup(x => x.GetCmd()).Returns(cmd);
+            mockStoredProc.Setup(x => x.ExcecRdr()).Returns(rdr);
+
+            ISqlStoredProc proc = mockStoredProc.Object;
+
+            SqlCommand cmd_ = proc.GetCmd();
+
+            IDataReader rdr_ = proc.ExcecRdr();
+
+            int id = (int)rdr_["id"];
+        }
+
 
         #endregion
     }

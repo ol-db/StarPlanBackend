@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Text;
 using StarPlanDBAccess.ORM;
 using StarPlan.DataAccess;
+using StarPlanDBAccess.Procedures;
 
 namespace StarPlan.Models.Space.Planets
 {
@@ -47,53 +48,48 @@ namespace StarPlan.Models.Space.Planets
 
         #region DB methods
 
-        public void LoadMapFromDB(SqlConnection conn)
+        public void LoadMapFromDB(SqlStoredProc proc)
         {
-            GetAllFromDB(conn);
+            GetAllFromDB(proc);
         }
 
-        public void GetAllFromDB(SqlConnection conn)
+        public void GetAllFromDB(SqlStoredProc proc)
         {
+            proc.SetProcName("LoadRegions");
 
-            using (SqlCommand cmd = new SqlCommand("LoadRegions", conn))
+            SqlCommand cmd = proc.GetCmd();
+
+            //set params
+            SpaceAccess.SetPlanetParam(
+                new Tuple<object, Planet.FeildType>(GetPlanetId(), Planet.FeildType.ID),
+                cmd.Parameters
+                );
+
+            try
             {
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                //get param info
-                SqlCommandBuilder.DeriveParameters(cmd);
-
-                //set params
-                SpaceAccess.SetPlanetParam(
-                    new Tuple<object, Planet.FeildType>(GetPlanetId(), Planet.FeildType.ID),
-                    cmd.Parameters
-                    );
-
-                try
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.HasRows)
                 {
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    if (reader.HasRows)
+                    while (reader.Read())
                     {
-                        while (reader.Read())
-                        {
-                            int id = SpaceAccess.GetRegionFeild_FromReader(
-                                Region.FeildType.ID, reader);
+                        int id = SpaceAccess.GetRegionFeild_FromReader(
+                            Region.FeildType.ID, reader);
 
-                            Add(new Region(id)).GetFromDB(reader);
-                        }
+                        Add(new Region(id)).GetFromDB(reader);
+                    }
 
-                        //checks bounds
-                        VerifyBounds();
-                    }
-                    else
-                    {
-                        //no planets exist
-                    }
-                    reader.Close();
+                    //checks bounds
+                    VerifyBounds();
                 }
-                catch (SqlException se)
+                else
                 {
-                    throw new InvalidOperationException("something went wrong");
+                    //no planets exist
                 }
+                reader.Close();
+            }
+            catch (SqlException se)
+            {
+                throw new InvalidOperationException("something went wrong");
             }
         }
 

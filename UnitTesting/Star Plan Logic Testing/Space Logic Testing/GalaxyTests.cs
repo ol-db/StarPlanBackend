@@ -134,59 +134,6 @@ namespace UnitTesting.Star_Plan_Logic_Testing.Space_Logic_Testing
 
         #region DB methods
 
-        [TestMethod]
-        public void fdsafsda()
-        {
-            IDataReader reader = MockPlanet(0, "name", "dwarf");
-
-            int id = (int)reader["id"];
-            string name = (string)reader["name"];
-            string size = (string)reader["size"];
-
-            while (reader.Read())
-            {
-
-                id = (int)reader["id"];
-                name = (string)reader["name"];
-                size = (string)reader["size"];
-
-            }
-
-            //Planet planet = new DwarfPlanet(0);
-
-            //planet.GetFromDB(reader);
-        }
-
-        private IDataReader MockPlanet(int id,string name,string size)
-        {
-            Mock<IDataReader> reader = new Mock<IDataReader>();
-            reader.Setup(x => x.Read()).Returns(true).Callback(
-                ()=>
-                {
-                    int id = ((int)(reader.Object["id"]))+1;
-                    string name = ((string)(reader.Object["name"])) + "name";
-
-                    Random rand = new Random();
-
-                    int sizeIndex = rand.Next(0, 3);
-                    Planet.SizeTypes size = (Planet.SizeTypes)sizeIndex;
-
-                    reader.SetupGet<object>(x => x["id"]).Returns(id);
-                    reader.SetupGet<object>(x => x["name"]).Returns(name);
-                    reader.SetupGet<object>(x => x["size"]).Returns(Planet.PlanetSizeTypeToString(size));
-
-                    if (id == 5)
-                    {
-                        reader.Setup(x => x.Read()).Returns(false);
-                    }
-                }
-            );
-            reader.SetupGet<object>(x => x["id"]).Returns(id);
-            reader.SetupGet<object>(x => x["name"]).Returns(name);
-            reader.SetupGet<object>(x => x["size"]).Returns(size);
-            return reader.Object;
-        }
-
         #endregion
     }
 }

@@ -1,5 +1,6 @@
 ﻿using StarPlan.DataAccess;
 using StarPlan.Exceptions.SolarSystemExceptions;
+using StarPlanDBAccess.Procedures;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -32,12 +33,12 @@ namespace StarPlan.Models
 
         #region DB methods
 
-        public void LoadMapFromDB(SqlConnection conn)
+        public void LoadMapFromDB(SqlStoredProc proc)
         {
-            GetAllFromDB(conn);
+            GetAllFromDB(proc);
             foreach (SolarSystem solarSystem in solarSystems)
             {
-                solarSystem.GetPlanets().LoadMapFromDB(conn);
+                solarSystem.GetPlanets().LoadMapFromDB(proc);
             }
         }
 
@@ -47,48 +48,43 @@ namespace StarPlan.Models
         ///     galaxy
         /// </summary>
         /// <param name="conn"></param>
-        public void GetAllFromDB(SqlConnection conn)
+        public void GetAllFromDB(SqlStoredProc proc)
         {
-            
-            using (SqlCommand cmd = new SqlCommand("LoadSolarSystems", conn))
+            proc.SetProcName("LoadSolarSystems");
+            SqlCommand cmd = proc.GetCmd();
+
+            SpaceAccess.SetGalaxyParam
+            (
+                new Tuple<object, Galaxy.FeildType>(GetGalaxyId(),Galaxy.FeildType.ID),
+                cmd.Parameters
+            );
+
+            try
             {
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                SqlCommandBuilder.DeriveParameters(cmd);
-
-                SpaceAccess.SetGalaxyParam
-                (
-                    new Tuple<object, Galaxy.FeildType>(GetGalaxyId(),Galaxy.FeildType.ID),
-                    cmd.Parameters
-                );
-
-                try
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.HasRows)
                 {
-                    SqlDataReader reader = cmd.ExecuteReader();
-                    if (reader.HasRows)
+                    while (reader.Read())
                     {
-                        while (reader.Read())
-                        {
 
-                            SpaceAccess.GetSolarSystemFeild_FromReader
-                            (
-                                SolarSystem.FeildType.ID,
-                                reader
-                            );
+                        int id = SpaceAccess.GetSolarSystemFeild_FromReader
+                        (
+                            SolarSystem.FeildType.ID,
+                            reader
+                        );
 
-                            Add(new SolarSystem(id));
-                        }
+                        Add(new SolarSystem(id));
                     }
-                    else
-                    {
-                        //no solar systems exist
-                    }
-                    reader.Close();
                 }
-                catch (SqlException se)
+                else
                 {
-                    throw new InvalidOperationException("something went wrong");
+                    //no solar systems exist
                 }
+                reader.Close();
+            }
+            catch (SqlException se)
+            {
+                throw new InvalidOperationException("something went wrong");
             }
         }
 

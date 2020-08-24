@@ -9,6 +9,7 @@ using System.Text;
 using StarPlan.Models;
 using StarPlan.Models.Space.Planets;
 using StarPlan.StarPlanConfig;
+using StarPlanDBAccess.Procedures;
 using WebServer.HTTP;
 using WebServer.HTTP.Routing;
 
@@ -23,37 +24,7 @@ namespace StarPlan
         /// <param name="args"></param>
         public static void Main(string[] args)
         {
-            //arrange
-            Resource pupils = new Resource("pupils");
-
-            HTTPResponse response = new HTTPResponse(
-                        HTTPResponse.StatusCodes.OK,
-                        HTTPMessage.MIMETypes.PLAIN_TEXT,
-                        "pupils"
-                        );
-
-            pupils.AddMethodRoute(new MethodRoute(
-                    HTTPRequest.RequestMethodType.GET,
-                    response
-                    )
-                );
-
-            HTTPRequest.RequestMethodType method = HTTPRequest.RequestMethodType.GET;
-
-            string[] URI = { "school", "pupils" };
-
-            //act
-            int port = 3000;
-            HTTPServer Server = new HTTPServer(port, new Resource("school"));
-
-            Server.AddSubRoute(pupils);
-
-            HTTPResponse actualResponse = Server.getHTTPRoute(method, URI);
-            //assert
-
-            Server.Listen();
-
-            //throw new NotImplementedException("nothing to start...");
+            throw new NotImplementedException("nothing to start...");
         }
     }
 }

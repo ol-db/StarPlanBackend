@@ -26,11 +26,11 @@ namespace StarPlan.Models
         {
             if (feild == FeildType.ID)
             {
-                return new string[] { "id", "regionId" };
+                return new string[] { "id", "galaxyId" };
             }
             else if (feild == FeildType.NAME)
             {
-                return new string[] { "name", "regionName" };
+                return new string[] { "name", "galaxyName" };
             }
             else if (feild == FeildType.DESC)
             {

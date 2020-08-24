@@ -21,7 +21,6 @@ namespace StarPlanDBAccess.Procedures
             cmd = new SqlCommand();
             cmd.Connection = conn;
             cmd.CommandType = CommandType.StoredProcedure;
-            SqlCommandBuilder.DeriveParameters(cmd);
         }
 
         public SqlCommand GetCmd()
@@ -42,6 +41,7 @@ namespace StarPlanDBAccess.Procedures
         public void SetProcName(string procName)
         {
             cmd.CommandText = procName;
+            SqlCommandBuilder.DeriveParameters(cmd);
         }
 
     }

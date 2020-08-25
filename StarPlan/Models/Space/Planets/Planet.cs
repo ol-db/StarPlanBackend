@@ -11,6 +11,7 @@ using StarPlanDBAccess.Exceptions;
 using StarPlanDBAccess.ORM;
 using StarPlan.DataAccess;
 using StarPlanDBAccess.Procedures;
+using Newtonsoft.Json;
 
 namespace StarPlan.Models.Space.Planets
 {
@@ -112,6 +113,12 @@ namespace StarPlan.Models.Space.Planets
                 throw new ArgumentException("not a valid planet type");
             }
         }
+
+        public static string PlanetToSizeString(Planet planet)
+        {
+            return PlanetSizeTypeToString(GetPlanetSize(planet));
+        }
+
         public static Point GetRegionsRange(Planet planet) {
 
             SizeTypes size = GetPlanetSize(planet);
@@ -231,7 +238,6 @@ namespace StarPlan.Models.Space.Planets
             try
             {
                 proc.SetProcName("EditPlanet");
-                SqlCommand cmd = proc.GetCmd();
 
                 SpaceAccess.SetPlanetParams
                 (
@@ -240,7 +246,7 @@ namespace StarPlan.Models.Space.Planets
                         new Tuple<object, Planet.FeildType>(GetName(),Planet.FeildType.NAME),
                         new Tuple<object, Planet.FeildType>(PlanetSizeTypeToString(GetPlanetSize(this)), Planet.FeildType.SIZE)
                     },
-                    cmd.Parameters
+                    proc.GetParams()
                 );
 
                 proc.ExcecSql();
@@ -255,7 +261,50 @@ namespace StarPlan.Models.Space.Planets
                 throw new InvalidOperationException("planet was not altered");
             }
         }
-        #endregion 
+        #endregion
+
+        #endregion
+
+        #region representation
+
+        public string ToJson()
+        {
+            return JsonConvert.SerializeObject
+            (
+                ToObj()
+            );
+        }
+
+        public object ToObj()
+        {
+            return
+                new
+                {
+                    id = GetId(),
+                    name = GetName(),
+                    size = Planet.PlanetToSizeString(this),
+                    regions = regions.ToObj()
+                };
+        }
+
+        public string ToJsonSingle()
+        {
+            return JsonConvert.SerializeObject
+            (
+                ToObjSingle()
+            );
+        }
+
+        public object ToObjSingle()
+        {
+            return
+                new
+                {
+                    id = GetId(),
+                    name = GetName(),
+                    size = Planet.PlanetToSizeString(this)
+                };
+        }
 
         #endregion
 

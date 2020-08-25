@@ -7,6 +7,7 @@ using StarPlan.Exceptions.GalaxyExceptions;
 using StarPlanDBAccess.ORM;
 using StarPlan.DataAccess;
 using StarPlanDBAccess.Procedures;
+using Newtonsoft.Json;
 
 namespace StarPlan.Models
 {
@@ -45,11 +46,10 @@ namespace StarPlan.Models
         public void GetAllFromDB(ISqlStoredProc proc)
         {
             proc.SetProcName("LoadGalaxies");
-            SqlCommand cmd = proc.GetCmd();
 
             try
             {
-                IDataReader reader = cmd.ExecuteReader();
+                IDataReader reader = proc.ExcecRdr();
 
                 while (reader.Read())
                 {
@@ -104,14 +104,40 @@ namespace StarPlan.Models
 
         #region representation
 
-        override
-        public string ToString()
+        public List<object> ToObj()
         {
-            string ToString = "";
-            foreach (Galaxy galaxy in galaxies) {
-                ToString += galaxy.ToString();
+            List<object> galaxies = new List<object>();
+            foreach (Galaxy galaxy in this.galaxies)
+            {
+                galaxies.Add(galaxy.ToObj());
             }
-            return ToString;
+            return galaxies;
+        }
+
+        public string ToJson()
+        {
+            return JsonConvert.SerializeObject
+            (
+                ToObj()
+            );
+        }
+
+        public List<object> ToObjSingle()
+        {
+            List<object> galaxies = new List<object>();
+            foreach (Galaxy galaxy in this.galaxies)
+            {
+                galaxies.Add(galaxy.ToObjSingle());
+            }
+            return galaxies;
+        }
+
+        public string ToJsonSingle()
+        {
+            return JsonConvert.SerializeObject
+            (
+                ToObjSingle()
+            );
         }
 
         #endregion

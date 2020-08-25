@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Text;
 using StarPlanDBAccess.Exceptions;
 using StarPlanDBAccess.ORM;
+using Newtonsoft.Json;
 
 namespace StarPlan.Models
 {
@@ -45,15 +46,42 @@ namespace StarPlan.Models
         #endregion
 
         #region representation
-        override
-        public string ToString()
+
+        public string ToJson()
         {
-            return string.Format(
-                "START_OF_SOLAR_SYSTEM\n"+
-                "id:{0}\n"+
-                "END_OF_SOLAR_SYSTEM\n"
-                ,id);
+            return JsonConvert.SerializeObject
+            (
+                ToObj()
+            );
         }
+
+        public object ToObj()
+        {
+            return
+                new
+                {
+                    id = GetId(),
+                    planets = planets.ToObj()
+                };
+        }
+
+        public string ToJsonSingle()
+        {
+            return JsonConvert.SerializeObject
+            (
+                ToObjSingle()
+            );
+        }
+
+        public object ToObjSingle()
+        {
+            return
+                new
+                {
+                    id = GetId()
+                };
+        }
+
         #endregion
 
         #region DB methods

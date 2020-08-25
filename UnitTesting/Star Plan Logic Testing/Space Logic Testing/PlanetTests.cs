@@ -11,6 +11,9 @@ using System.Data.SqlClient;
 using Moq;
 using System.Data;
 using StarPlanDBAccess.Procedures;
+using Newtonsoft.Json;
+using StarPlan.Models;
+using StarPlan.StarPlanConfig;
 
 namespace UnitTesting.Star_Plan_Logic_Testing.Space_Logic_Testing
 {
@@ -104,34 +107,78 @@ namespace UnitTesting.Star_Plan_Logic_Testing.Space_Logic_Testing
         #region DB methods
 
         [TestMethod]
-        public void fdsafsda()
+        public void GetAllFromDB_ValidRecords_ReturnPlanetListJson()
         {
-            Mock<ISqlStoredProc> mockStoredProc = new Mock<ISqlStoredProc>(MockBehavior.Loose);
+            //arrange
+            ISqlStoredProc proc = MockLoadPlanets();
+            PlanetList planets = new PlanetList(0);
+            List<object> planetsExpected = TestLoadPlanetObject();
+            string planetsExpectedJson = JsonConvert.SerializeObject(planetsExpected);
 
-            SqlCommand cmd = new SqlCommand();
+            //act
+            planets.GetAllFromDB(proc);
 
-            cmd.Parameters.Add("foo", SqlDbType.Int);
-            cmd.Parameters.Add("bar", SqlDbType.Int);
+            //logging
+            Console.WriteLine("expected: {0}", planetsExpectedJson);
+            Console.WriteLine("actual: {0}", planets.ToJson());
 
-            Mock<IDataReader> mockReader = new Mock<IDataReader>();
-            mockReader.Setup(x => x["id"]).Returns(0);
-            mockReader.Setup(x => x["name"]).Returns("hello");
-            mockReader.Setup(x => x["size"]).Returns("dwarf");
-
-            IDataReader rdr = mockReader.Object;
-
-            mockStoredProc.Setup(x => x.GetCmd()).Returns(cmd);
-            mockStoredProc.Setup(x => x.ExcecRdr()).Returns(rdr);
-
-            ISqlStoredProc proc = mockStoredProc.Object;
-
-            SqlCommand cmd_ = proc.GetCmd();
-
-            IDataReader rdr_ = proc.ExcecRdr();
-
-            int id = (int)rdr_["id"];
+            //assert
+            Assert.AreEqual(planetsExpectedJson, planets.ToJson());
         }
 
+        #region test data
+
+        private ISqlStoredProc MockLoadPlanets()
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Parameters.Add("@systemId", SqlDbType.VarChar);
+
+            List<dynamic> planetData = TestLoadPlanetObject();
+
+            Mock<IDataReader> mockReader = new Mock<IDataReader>();
+            mockReader.Setup(x => x.FieldCount).Returns(3);
+            mockReader.Setup(x => x.GetName(0)).Returns("id");
+            mockReader.Setup(x => x.GetName(1)).Returns("name");
+            mockReader.Setup(x => x.GetName(2)).Returns("size");
+            mockReader.Setup(x => x["id"]).Returns(0);
+            mockReader.Setup(x => x.Read()).Callback
+            (
+                ()=>
+                {
+                    int id = (int)mockReader.Object["id"];
+
+                    string name = planetData[id].name;
+                    string size = planetData[id].size;
+
+                    mockReader.Setup(x => x["id"]).Returns(id + 1);
+                    mockReader.Setup(x => x["name"]).Returns(name);
+                    mockReader.Setup(x => x["size"]).Returns(size);
+
+                    if (id == 2)
+                    {
+                        mockReader.Setup(x => x.Read()).Returns(false);
+                    }
+                }
+            ).Returns(true);
+
+            Mock<ISqlStoredProc> mockStoredProc = new Mock<ISqlStoredProc>(MockBehavior.Loose);
+            mockStoredProc.Setup(x => x.GetParams()).Returns(cmd.Parameters);
+            mockStoredProc.Setup(x => x.ExcecRdr()).Returns(mockReader.Object);
+
+            return mockStoredProc.Object;
+        }
+
+        private List<dynamic> TestLoadPlanetObject()
+        {
+            List<dynamic> planets = new List<dynamic>();
+            planets.Add(new { id = 1, name = "row1", size = "giant" });
+            planets.Add(new { id = 2, name = "row2", size = "dwarf" });
+            planets.Add(new { id = 3, name = "row3", size = "medium" });
+
+            return planets;
+        }
+
+        #endregion
 
         #endregion
     }

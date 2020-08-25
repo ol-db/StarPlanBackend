@@ -8,7 +8,7 @@ namespace StarPlanDBAccess.Procedures
 {
     public interface ISqlStoredProc
     {
-        SqlCommand GetCmd();
+        SqlParameterCollection GetParams();
         IDataReader ExcecRdr();
         void ExcecSql();
         void SetProcName(string procName);

@@ -9,6 +9,7 @@ using System.Text;
 using StarPlanDBAccess.ORM;
 using StarPlan.DataAccess;
 using StarPlanDBAccess.Procedures;
+using Newtonsoft.Json;
 
 namespace StarPlan.Models.Space.Planets
 {
@@ -57,13 +58,11 @@ namespace StarPlan.Models.Space.Planets
         {
             proc.SetProcName("LoadRegions");
 
-            SqlCommand cmd = proc.GetCmd();
-
             //set params
             SpaceAccess.SetPlanetParam
             (
                 new Tuple<object, Planet.FeildType>(GetPlanetId(), Planet.FeildType.ID),
-                cmd.Parameters
+                proc.GetParams()
             );
 
             try
@@ -113,6 +112,28 @@ namespace StarPlan.Models.Space.Planets
             regions.Add(regionToAdd);
             return regionToAdd;
         }
+        #endregion
+
+        #region representation
+
+        public List<object> ToObj()
+        {
+            List<object> regions = new List<object>();
+            foreach (Region region in this.regions)
+            {
+                regions.Add(region.ToObj());
+            }
+            return regions;
+        }
+
+        public string ToJson()
+        {
+            return JsonConvert.SerializeObject
+            (
+                ToObj()
+            );
+        }
+
         #endregion
 
         #region setters

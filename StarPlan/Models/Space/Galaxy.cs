@@ -5,6 +5,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Text;
+using Newtonsoft.Json;
 using StarPlan.DataAccess;
 using StarPlanDBAccess.Exceptions;
 using StarPlanDBAccess.ORM;
@@ -77,8 +78,6 @@ namespace StarPlan.Models
 
                 proc.SetProcName("EditGalaxy");
 
-                SqlCommand cmd = proc.GetCmd();
-
                 ///catch any SQL error
                 ///so changes can be undone
 
@@ -90,7 +89,7 @@ namespace StarPlan.Models
                         new Tuple<object, FeildType>(GetName(),FeildType.NAME),
                         new Tuple<object, FeildType>(GetDesc(),FeildType.DESC)
                     },
-                    cmd.Parameters
+                    proc.GetParams()
                 );
 
                 proc.ExcecSql();
@@ -157,18 +156,43 @@ namespace StarPlan.Models
 
         #region representation
 
-        override
-        public string ToString()
+        public string ToJson()
         {
-            return string.Format(
-                "START_OF_GALAXY\n" +
-                "id:{0}\n" +
-                "name:{1}\n" +
-                "desc:{2}\n" +
-                solarSystems.ToString() +
-                "END_OF_GALAXY\n",
-                id, name, desc
-                );
+            return JsonConvert.SerializeObject
+            (
+                ToObj()
+            );
+        }
+
+        public object ToObj()
+        {
+            return
+                new
+                {
+                    id = GetId(),
+                    name = GetName(),
+                    desc = GetDesc(),
+                    systems = solarSystems.ToObj()
+                };
+        }
+
+        public string ToJsonSingle()
+        {
+            return JsonConvert.SerializeObject
+            (
+                ToObjSingle()
+            );
+        }
+
+        public object ToObjSingle()
+        {
+            return
+                new
+                {
+                    id = GetId(),
+                    name = GetName(),
+                    desc = GetDesc()
+                };
         }
 
         #endregion

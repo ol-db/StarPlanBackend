@@ -7,6 +7,7 @@ using System.Text;
 using StarPlanDBAccess.ORM;
 using StarPlan.DataAccess;
 using StarPlanDBAccess.Procedures;
+using Newtonsoft.Json;
 
 namespace StarPlan.Models.Space.Planets
 {
@@ -25,6 +26,8 @@ namespace StarPlan.Models.Space.Planets
 
         #region DB methods
 
+        #region get methods
+
         public void LoadMapFromDB(ISqlStoredProc proc)
         {
             GetAllFromDB(proc);
@@ -37,13 +40,12 @@ namespace StarPlan.Models.Space.Planets
         public void GetAllFromDB(ISqlStoredProc proc)
         {
             proc.SetProcName("LoadPlanets");
-            SqlCommand cmd = proc.GetCmd();
 
             //set param
             SpaceAccess.SetSolarSystemParam(
                 new Tuple<object, SolarSystem.FeildType>(
                     GetSolarSystemId(), SolarSystem.FeildType.ID),
-                cmd.Parameters);
+                proc.GetParams());
 
             try
             {
@@ -65,6 +67,8 @@ namespace StarPlan.Models.Space.Planets
                 throw new InvalidOperationException("something went wrong");
             }
         }
+
+        #endregion
 
         #endregion
 
@@ -96,6 +100,46 @@ namespace StarPlan.Models.Space.Planets
                 return planet;
             }
 
+        }
+
+        #endregion
+
+        #region representation
+
+        public List<object> ToObj()
+        {
+            List<object> planets = new List<object>();
+            foreach (Planet planet in this.planets)
+            {
+                planets.Add(planet.ToObj());
+            }
+            return planets;
+        }
+
+        public string ToJson()
+        {
+            return JsonConvert.SerializeObject
+            (
+                ToObj()
+            );
+        }
+
+        public List<object> ToObjSingle()
+        {
+            List<object> planets = new List<object>();
+            foreach (Planet planet in this.planets)
+            {
+                planets.Add(planet.ToObjSingle());
+            }
+            return planets;
+        }
+
+        public string ToJsonSingle()
+        {
+            return JsonConvert.SerializeObject
+            (
+                ToObjSingle()
+            );
         }
 
         #endregion

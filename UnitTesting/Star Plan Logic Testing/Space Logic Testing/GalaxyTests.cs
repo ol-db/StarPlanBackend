@@ -5,63 +5,16 @@ using System.Data.SqlClient;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using Newtonsoft.Json;
 using StarPlan.Models;
 using StarPlan.Models.Space.Planets;
+using StarPlanDBAccess.Procedures;
 
 namespace UnitTesting.Star_Plan_Logic_Testing.Space_Logic_Testing
 {
     [TestClass]
     public class GalaxyTests
     {
-        /// <summary>
-        /// create a new galaxy
-        /// check that the string representation of the class
-        /// works properly
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="name"></param>
-        /// <param name="desc"></param>
-        /// <param name="expectedGalaxyString"></param>
-        [TestMethod]
-        #region data
-        [DataRow(0, "name", "desc desc desc",
-                (
-                    "START_OF_GALAXY\n" +
-                    "id:0\n" +
-                    "name:name\n" +
-                    "desc:desc desc desc\n" +
-                    "" +
-                    "END_OF_GALAXY\n"
-                )
-            )]
-        [DataRow(1, "newGalaxy", "this is a new galaxy",
-                (
-                    "START_OF_GALAXY\n" +
-                    "id:1\n" +
-                    "name:newGalaxy\n" +
-                    "desc:this is a new galaxy\n" +
-                    "" +
-                    "END_OF_GALAXY\n"
-                )
-            )]
-        #endregion
-        public void ToString_ValidObject_ValidString(int id, string name, string desc, string expectedGalaxyString) {
-            
-            //arrange
-            Galaxy galaxy = new Galaxy(id, name, desc);
-
-            //act
-            string actualGalaxyString = galaxy.ToString();
-
-            //logging
-            Console.WriteLine("Expected");
-            Console.Write(expectedGalaxyString);
-            Console.WriteLine("Actual");
-            Console.Write(actualGalaxyString);
-
-            //assert
-            Assert.AreEqual(expectedGalaxyString, actualGalaxyString);
-        }
 
         #region validate name and desc
         /// <summary>
@@ -133,6 +86,76 @@ namespace UnitTesting.Star_Plan_Logic_Testing.Space_Logic_Testing
         #endregion
 
         #region DB methods
+
+        [TestMethod]
+        public void GetAllFromDB_ValidRecords_ReturnGalaxyListJson()
+        {
+            //arrange
+            ISqlStoredProc proc = MockLoadGalaxies();
+            GalaxyList galaxies = new GalaxyList();
+            List<object> galaxiesExpected = TestLoadGalaxyObject();
+            string galaxiesExpectedJson = JsonConvert.SerializeObject(galaxiesExpected);
+
+            //act
+            galaxies.GetAllFromDB(proc);
+
+            //logging
+            Console.WriteLine("expected: {0}", galaxiesExpectedJson);
+            Console.WriteLine("actual: {0}", galaxies.ToJson());
+
+            //assert
+            Assert.AreEqual(galaxiesExpectedJson, galaxies.ToJson());
+        }
+
+        #region test data
+
+        private ISqlStoredProc MockLoadGalaxies()
+        {
+            List<dynamic> galaxyData = TestLoadGalaxyObject();
+
+            Mock<IDataReader> mockReader = new Mock<IDataReader>();
+            mockReader.Setup(x => x.FieldCount).Returns(3);
+            mockReader.Setup(x => x.GetName(0)).Returns("id");
+            mockReader.Setup(x => x.GetName(1)).Returns("name");
+            mockReader.Setup(x => x.GetName(2)).Returns("desc");
+            mockReader.Setup(x => x["id"]).Returns(0);
+            mockReader.Setup(x => x.Read()).Callback
+            (
+                () =>
+                {
+                    int id = (int)mockReader.Object["id"];
+
+                    string name = galaxyData[id].name;
+                    string desc = galaxyData[id].desc;
+
+                    mockReader.Setup(x => x["id"]).Returns(id + 1);
+                    mockReader.Setup(x => x["name"]).Returns(name);
+                    mockReader.Setup(x => x["desc"]).Returns(desc);
+
+                    if (id == 2)
+                    {
+                        mockReader.Setup(x => x.Read()).Returns(false);
+                    }
+                }
+            ).Returns(true);
+
+            Mock<ISqlStoredProc> mockStoredProc = new Mock<ISqlStoredProc>(MockBehavior.Loose);
+            mockStoredProc.Setup(x => x.ExcecRdr()).Returns(mockReader.Object);
+
+            return mockStoredProc.Object;
+        }
+
+        private List<dynamic> TestLoadGalaxyObject()
+        {
+            List<dynamic> galaxies = new List<dynamic>();
+            galaxies.Add(new { id = 1, name = "row1", desc = "Lorem ipsum dolor sit amet, consectetur adipiscing elit." });
+            galaxies.Add(new { id = 2, name = "row2", desc = "Nam hendrerit a metus in maximus." });
+            galaxies.Add(new { id = 3, name = "row3", desc = "Donec sit amet urna sed turpis scelerisque lacinia." });
+
+            return galaxies;
+        }
+
+        #endregion
 
         #endregion
     }

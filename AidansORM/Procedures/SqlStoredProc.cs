@@ -23,9 +23,9 @@ namespace StarPlanDBAccess.Procedures
             cmd.CommandType = CommandType.StoredProcedure;
         }
 
-        public SqlCommand GetCmd()
+        public SqlParameterCollection GetParams()
         {
-            return this.cmd;
+            return this.cmd.Parameters;
         }
 
         public IDataReader ExcecRdr()

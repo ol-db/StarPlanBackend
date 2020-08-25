@@ -1,4 +1,5 @@
-﻿using StarPlan.DataAccess;
+﻿using Newtonsoft.Json;
+using StarPlan.DataAccess;
 using StarPlan.Exceptions.SolarSystemExceptions;
 using StarPlanDBAccess.Procedures;
 using System;
@@ -51,17 +52,16 @@ namespace StarPlan.Models
         public void GetAllFromDB(ISqlStoredProc proc)
         {
             proc.SetProcName("LoadSolarSystems");
-            SqlCommand cmd = proc.GetCmd();
 
             SpaceAccess.SetGalaxyParam
             (
                 new Tuple<object, Galaxy.FeildType>(GetGalaxyId(),Galaxy.FeildType.ID),
-                cmd.Parameters
+                proc.GetParams()
             );
 
             try
             {
-                IDataReader reader = cmd.ExecuteReader();
+                IDataReader reader = proc.ExcecRdr();
                 while (reader.Read())
                 {
 
@@ -124,15 +124,43 @@ namespace StarPlan.Models
         #endregion
 
         #region representation
-        override
-        public string ToString()
+
+        public List<object> ToObj()
         {
-            string value = "";
-            foreach (SolarSystem solarSystem in solarSystems) {
-                value += solarSystem.ToString();
+            List<object> systems = new List<object>();
+            foreach (SolarSystem system in this.solarSystems)
+            {
+                systems.Add(system.ToObj());
             }
-            return value;
+            return systems;
         }
+
+        public string ToJson()
+        {
+            return JsonConvert.SerializeObject
+            (
+                ToObj()
+            );
+        }
+
+        public List<object> ToObjSingle()
+        {
+            List<object> systems = new List<object>();
+            foreach (SolarSystem system in this.solarSystems)
+            {
+                systems.Add(system.ToObjSingle());
+            }
+            return systems;
+        }
+
+        public string ToJsonSingle()
+        {
+            return JsonConvert.SerializeObject
+            (
+                ToObjSingle()
+            );
+        }
+
         #endregion
 
         #region setters

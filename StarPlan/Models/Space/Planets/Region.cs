@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Text;
+using Newtonsoft.Json;
 using StarPlan.DataAccess;
 using StarPlanDBAccess.Exceptions;
 using StarPlanDBAccess.ORM;
@@ -99,8 +100,6 @@ namespace StarPlan.Models.Space.Planets
             string lastName = GetName();
             SetName(name);
 
-            SqlCommand cmd = proc.GetCmd();
-
             try
             {
 
@@ -112,7 +111,7 @@ namespace StarPlan.Models.Space.Planets
                         new Tuple<object, FeildType>(GetId(),FeildType.ID),
                         new Tuple<object, FeildType>(GetName(),FeildType.NAME)
                     },
-                    cmd.Parameters
+                    proc.GetParams()
                     );
                 proc.ExcecSql();
             }
@@ -128,6 +127,28 @@ namespace StarPlan.Models.Space.Planets
         }
 
         #endregion
+
+        #endregion
+
+        #region representation
+
+        public string ToJson()
+        {
+            return JsonConvert.SerializeObject
+            (
+                ToObj()
+            );
+        }
+
+        public object ToObj()
+        {
+            return
+                new
+                {
+                    id = GetId(),
+                    name = GetName()
+                };
+        }
 
         #endregion
 

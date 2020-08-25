@@ -16,6 +16,8 @@ namespace UnitTesting.Star_Plan_Logic_Testing.Space_Logic_Testing
     {
         #region DB methods
 
+        #region get
+
         [TestMethod]
         public void GetAllFromDB_ValidRecords_ReturnSystemListJson()
         {
@@ -80,6 +82,8 @@ namespace UnitTesting.Star_Plan_Logic_Testing.Space_Logic_Testing
 
             return systems;
         }
+
+        #endregion
 
         #endregion
 

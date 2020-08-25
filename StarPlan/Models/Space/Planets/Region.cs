@@ -80,6 +80,8 @@ namespace StarPlan.Models.Space.Planets
 
         #region DB methods
 
+        #region get
+
         public void GetFromDB(IDataReader reader)
         {
             string name = SpaceAccess.GetRegionFeild_FromReader(
@@ -87,6 +89,8 @@ namespace StarPlan.Models.Space.Planets
 
             Init(name);
         }
+
+        #endregion
 
         #region edit
 

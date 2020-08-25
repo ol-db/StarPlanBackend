@@ -47,6 +47,8 @@ namespace StarPlan.Models
 
         #region representation
 
+        #region nested Objs
+
         public string ToJson()
         {
             return JsonConvert.SerializeObject
@@ -65,6 +67,10 @@ namespace StarPlan.Models
                 };
         }
 
+        #endregion
+
+        #region single Obj
+
         public string ToJsonSingle()
         {
             return JsonConvert.SerializeObject
@@ -81,6 +87,8 @@ namespace StarPlan.Models
                     id = GetId()
                 };
         }
+
+        #endregion
 
         #endregion
 

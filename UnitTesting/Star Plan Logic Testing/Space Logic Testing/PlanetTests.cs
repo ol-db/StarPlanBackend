@@ -106,6 +106,8 @@ namespace UnitTesting.Star_Plan_Logic_Testing.Space_Logic_Testing
 
         #region DB methods
 
+        #region get
+
         [TestMethod]
         public void GetAllFromDB_ValidRecords_ReturnPlanetListJson()
         {
@@ -131,7 +133,7 @@ namespace UnitTesting.Star_Plan_Logic_Testing.Space_Logic_Testing
         private ISqlStoredProc MockLoadPlanets()
         {
             SqlCommand cmd = new SqlCommand();
-            cmd.Parameters.Add("@systemId", SqlDbType.VarChar);
+            cmd.Parameters.Add("@systemId", SqlDbType.Int);
 
             List<dynamic> planetData = TestLoadPlanetObject();
 
@@ -181,5 +183,96 @@ namespace UnitTesting.Star_Plan_Logic_Testing.Space_Logic_Testing
         #endregion
 
         #endregion
+
+        #region edit
+
+        [TestMethod]
+        [DataRow("name2","dwarf")]
+        [DataRow("","medium")]
+        [DataRow("000","giant")]
+        public void EditInDB_ValidData_ReturnJson(string name, string size)
+        {
+            //arrange
+            Planet planet = PlanetFactory.GetPlanetFromSize(0, size);
+            string actual = JsonConvert.SerializeObject
+            (
+                new
+                {
+                    id = 0,
+                    name = name,
+                    size = Planet.PlanetToSizeString(planet)
+                }
+            );
+
+            //act
+            planet.EditInDB(name, MockEditPlanet());
+            string expected = planet.ToJsonSingle();
+
+            //logging
+            Console.WriteLine("expected: {0}", expected);
+            Console.WriteLine("actual: {0}", actual);
+
+            //assert
+            Assert.AreEqual(expected, actual);
+        }
+
+        #region test data
+
+        private ISqlStoredProc MockEditPlanet()
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Parameters.Add("@id", SqlDbType.Int);
+            cmd.Parameters.Add("@name", SqlDbType.VarChar);
+            cmd.Parameters.Add("@size", SqlDbType.VarChar);
+
+            Mock<ISqlStoredProc> mockStoredProc = new Mock<ISqlStoredProc>(MockBehavior.Loose);
+            mockStoredProc.Setup(x => x.ExcecSql());
+            mockStoredProc.Setup(x => x.GetParams()).Returns(cmd.Parameters);
+
+            return mockStoredProc.Object;
+        }
+
+        #endregion
+
+        [TestMethod]
+        [DataRow("name1","name2", "dwarf")]
+        [DataRow("name1","", "medium")]
+        [DataRow("name1","000", "giant")]
+        public void EditInDB_NoDBConn_RevertChanges(string nameInit, string nameChange, string size)
+        {
+            //arrange
+            Planet planet = PlanetFactory.GetPlanetFromSize(0, nameInit, size);
+            string actual = JsonConvert.SerializeObject
+            (
+                new
+                {
+                    id = 0,
+                    name = "name1",
+                    size = Planet.PlanetToSizeString(planet)
+                }
+            );
+
+            try
+            {
+                //act
+                planet.EditInDB(nameChange, new SqlStoredProc());
+
+                //assert
+                Assert.Fail();
+            }
+            catch(Exception e)
+            {
+                //test passes
+            }
+            string expected = planet.ToJsonSingle();
+
+            //assert
+            Assert.AreEqual(expected, actual);
+        }
+
+        #endregion
+
+        #endregion
+
     }
 }

@@ -17,6 +17,8 @@ namespace UnitTesting.Star_Plan_Logic_Testing.Space_Logic_Testing
     {
         #region DB methods
 
+        #region get
+
         [TestMethod]
         public void GetAllFromDB_ValidRecords_ReturnRegionListJson()
         {
@@ -84,6 +86,93 @@ namespace UnitTesting.Star_Plan_Logic_Testing.Space_Logic_Testing
             regions.Add(new { id = 3, name = "row3" });
 
             return regions;
+        }
+
+        #endregion
+
+        #endregion
+
+        #region edit
+
+        [TestMethod]
+        [DataRow("name2")]
+        [DataRow("")]
+        [DataRow("000")]
+        public void EditInDB_ValidData_ReturnJson(string name)
+        {
+            //arrange
+            Region region = new Region(0, name);
+            string actual = JsonConvert.SerializeObject
+            (
+                new
+                {
+                    id = 0,
+                    name = name
+                }
+            );
+
+            //act
+            region.EditInDB(name, MockEditRegion());
+            string expected = region.ToJson();
+
+            //logging
+            Console.WriteLine("expected: {0}", expected);
+            Console.WriteLine("actual: {0}", actual);
+
+            //assert
+            Assert.AreEqual(expected, actual);
+        }
+
+        #region test data
+
+        private ISqlStoredProc MockEditRegion()
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Parameters.Add("@id", SqlDbType.Int);
+            cmd.Parameters.Add("@name", SqlDbType.VarChar);
+
+            Mock<ISqlStoredProc> mockStoredProc = new Mock<ISqlStoredProc>(MockBehavior.Loose);
+            mockStoredProc.Setup(x => x.ExcecSql());
+            mockStoredProc.Setup(x => x.GetParams()).Returns(cmd.Parameters);
+
+            return mockStoredProc.Object;
+        }
+
+        #endregion
+
+        [TestMethod]
+        [DataRow("name1", "name2")]
+        [DataRow("name1", "")]
+        [DataRow("name1", "000")]
+        public void EditInDB_NoDBConn_RevertChanges(string nameInit, string nameChange)
+        {
+            //arrange
+            Region region = new Region(0,nameInit);
+            string actual = JsonConvert.SerializeObject
+            (
+                new
+                {
+                    id = 0,
+                    name = nameInit
+                }
+            );
+
+            try
+            {
+                //act
+                region.EditInDB(nameChange, new SqlStoredProc());
+
+                //assert
+                Assert.Fail();
+            }
+            catch (Exception e)
+            {
+                //test passes
+            }
+            string expected = region.ToJson();
+
+            //assert
+            Assert.AreEqual(expected, actual);
         }
 
         #endregion

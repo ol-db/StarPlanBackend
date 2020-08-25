@@ -26,7 +26,7 @@ namespace StarPlan.Models.Space.Planets
 
         #region DB methods
 
-        #region get methods
+        #region get
 
         public void LoadMapFromDB(ISqlStoredProc proc)
         {
@@ -106,6 +106,8 @@ namespace StarPlan.Models.Space.Planets
 
         #region representation
 
+        #region nested Objs
+
         public List<object> ToObj()
         {
             List<object> planets = new List<object>();
@@ -124,6 +126,10 @@ namespace StarPlan.Models.Space.Planets
             );
         }
 
+        #endregion
+
+        #region single Obj
+
         public List<object> ToObjSingle()
         {
             List<object> planets = new List<object>();
@@ -141,6 +147,8 @@ namespace StarPlan.Models.Space.Planets
                 ToObjSingle()
             );
         }
+
+        #endregion
 
         #endregion
 

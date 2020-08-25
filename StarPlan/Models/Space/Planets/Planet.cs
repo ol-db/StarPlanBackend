@@ -213,6 +213,8 @@ namespace StarPlan.Models.Space.Planets
 
         #region DB methods
 
+        #region get
+
         public void GetFromDB(IDataReader reader) 
         {
             string name = SpaceAccess.GetPlanetFeild_FromReader(
@@ -220,6 +222,8 @@ namespace StarPlan.Models.Space.Planets
 
             Init(name);
         }
+
+        #endregion
 
         #region edit
         /// <todo>
@@ -267,6 +271,8 @@ namespace StarPlan.Models.Space.Planets
 
         #region representation
 
+        #region nested Objs
+
         public string ToJson()
         {
             return JsonConvert.SerializeObject
@@ -287,6 +293,10 @@ namespace StarPlan.Models.Space.Planets
                 };
         }
 
+        #endregion
+
+        #region single Obj
+
         public string ToJsonSingle()
         {
             return JsonConvert.SerializeObject
@@ -305,6 +315,8 @@ namespace StarPlan.Models.Space.Planets
                     size = Planet.PlanetToSizeString(this)
                 };
         }
+
+        #endregion
 
         #endregion
 

@@ -104,6 +104,8 @@ namespace StarPlan.Models
 
         #region representation
 
+        #region nested Objs
+
         public List<object> ToObj()
         {
             List<object> galaxies = new List<object>();
@@ -122,6 +124,10 @@ namespace StarPlan.Models
             );
         }
 
+        #endregion
+
+        #region single Obj
+
         public List<object> ToObjSingle()
         {
             List<object> galaxies = new List<object>();
@@ -139,6 +145,8 @@ namespace StarPlan.Models
                 ToObjSingle()
             );
         }
+
+        #endregion
 
         #endregion
     }

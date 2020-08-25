@@ -49,6 +49,8 @@ namespace StarPlan.Models.Space.Planets
 
         #region DB methods
 
+        #region get
+
         public void LoadMapFromDB(ISqlStoredProc proc)
         {
             GetAllFromDB(proc);
@@ -86,6 +88,8 @@ namespace StarPlan.Models.Space.Planets
                 throw new InvalidOperationException("something went wrong");
             }
         }
+
+        #endregion
 
         #endregion
 

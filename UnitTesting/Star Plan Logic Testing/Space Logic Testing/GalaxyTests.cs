@@ -87,6 +87,8 @@ namespace UnitTesting.Star_Plan_Logic_Testing.Space_Logic_Testing
 
         #region DB methods
 
+        #region get
+
         [TestMethod]
         public void GetAllFromDB_ValidRecords_ReturnGalaxyListJson()
         {
@@ -158,5 +160,85 @@ namespace UnitTesting.Star_Plan_Logic_Testing.Space_Logic_Testing
         #endregion
 
         #endregion
+
+        #region edit
+
+        [TestMethod]
+        [DataRow("name2","desc2")]
+        [DataRow("", "")]
+        [DataRow("000", "000")]
+        public void EditInDB_ValidData_ReturnJson(string name,string desc)
+        {
+            //arrange
+            Galaxy galaxy = new Galaxy(0, "name1", "desc1");
+            string actual = JsonConvert.SerializeObject(new { id = 0, name = name, desc = desc });
+
+            //act
+            galaxy.EditInDB(name, desc, MockEditGalaxy());
+            string expected = galaxy.ToJsonSingle();
+
+            //logging
+            Console.WriteLine("expected: {0}",expected);
+            Console.WriteLine("actual: {0}", actual);
+
+            //assert
+            Assert.AreEqual(expected, actual);
+        }
+
+        private ISqlStoredProc MockEditGalaxy()
+        {
+            SqlCommand cmd = new SqlCommand();
+            cmd.Parameters.Add("@id", SqlDbType.Int);
+            cmd.Parameters.Add("@name", SqlDbType.VarChar);
+            cmd.Parameters.Add("@desc", SqlDbType.VarChar);
+
+            Mock<ISqlStoredProc> mockStoredProc = new Mock<ISqlStoredProc>(MockBehavior.Loose);
+            mockStoredProc.Setup(x => x.ExcecSql());
+            mockStoredProc.Setup(x => x.GetParams()).Returns(cmd.Parameters);
+
+            return mockStoredProc.Object;
+        }
+
+        [TestMethod]
+        [DataRow("name2", "desc1")]
+        [DataRow("", "desc2")]
+        [DataRow("000", "desc3")]
+        public void EditInDB_NoDBConn_RevertChanges(string name, string desc)
+        {
+            //arrange
+            Galaxy galaxy = new Galaxy(0, "name", "desc");
+            string expected = JsonConvert.SerializeObject
+            (
+                new
+                {
+                    id = 0,
+                    name = "name",
+                    desc = "desc"
+                }
+            );
+
+            try
+            {
+                //act
+                galaxy.EditInDB(name,desc, new SqlStoredProc());
+
+                //assert
+                Assert.Fail();
+            }
+            catch (Exception e)
+            {
+                //test passes
+            }
+            string actual = galaxy.ToJsonSingle();
+
+            //assert
+            Assert.AreEqual(expected, actual);
+        }
+
     }
+
+    #endregion
+
+    #endregion
+
 }

@@ -34,6 +34,8 @@ namespace StarPlan.Models
 
         #region DB methods
 
+        #region get
+
         public void LoadMapFromDB(ISqlStoredProc proc)
         {
             GetAllFromDB(proc);
@@ -83,6 +85,8 @@ namespace StarPlan.Models
 
         #endregion
 
+        #endregion
+
         #region in memory methods
 
         public SolarSystem GetById(int id)
@@ -125,6 +129,8 @@ namespace StarPlan.Models
 
         #region representation
 
+        #region nested Objs
+
         public List<object> ToObj()
         {
             List<object> systems = new List<object>();
@@ -143,6 +149,10 @@ namespace StarPlan.Models
             );
         }
 
+        #endregion
+
+        #region single Obj
+
         public List<object> ToObjSingle()
         {
             List<object> systems = new List<object>();
@@ -160,6 +170,8 @@ namespace StarPlan.Models
                 ToObjSingle()
             );
         }
+
+        #endregion
 
         #endregion
 

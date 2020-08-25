@@ -1,55 +1,53 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Newtonsoft.Json;
-using StarPlan.Models.Space.Planets;
+using StarPlan.Models;
 using StarPlanDBAccess.Procedures;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Drawing;
 using System.Text;
 
 namespace UnitTesting.Star_Plan_Logic_Testing.Space_Logic_Testing
 {
     [TestClass]
-    public class RegionTests
+    public class SolarSystemTests
     {
         #region DB methods
 
         [TestMethod]
-        public void GetAllFromDB_ValidRecords_ReturnRegionListJson()
+        public void GetAllFromDB_ValidRecords_ReturnSystemListJson()
         {
             //arrange
-            ISqlStoredProc proc = MockLoadRegions();
-            RegionList regions = new RegionList(0,new Point(2,3));
-            List<object> regionsExpected = TestLoadRegionObject();
-            string regionsExpectedJson = JsonConvert.SerializeObject(regionsExpected);
+            ISqlStoredProc proc = MockLoadSystems();
+            SolarSystemList systems = new SolarSystemList(0);
+            List<object> systemsExpected = TestLoadSystemObject();
+            string systemsExpectedJson = JsonConvert.SerializeObject(systemsExpected);
 
             //act
-            regions.GetAllFromDB(proc);
+            systems.GetAllFromDB(proc);
 
             //logging
-            Console.WriteLine("expected: {0}", regionsExpectedJson);
-            Console.WriteLine("actual: {0}", regions.ToJson());
+            Console.WriteLine("expected: {0}", systemsExpectedJson);
+            Console.WriteLine("actual: {0}", systems.ToJsonSingle());
 
             //assert
-            Assert.AreEqual(regionsExpectedJson, regions.ToJson());
+            Assert.AreEqual(systemsExpectedJson, systems.ToJsonSingle());
         }
 
         #region test data
 
-        private ISqlStoredProc MockLoadRegions()
+        private ISqlStoredProc MockLoadSystems()
         {
             SqlCommand cmd = new SqlCommand();
-            cmd.Parameters.Add("@planetId", SqlDbType.VarChar);
+            cmd.Parameters.Add("@galaxyId", SqlDbType.VarChar);
 
-            List<dynamic> regionData = TestLoadRegionObject();
+            List<dynamic> systemData = TestLoadSystemObject();
 
             Mock<IDataReader> mockReader = new Mock<IDataReader>();
-            mockReader.Setup(x => x.FieldCount).Returns(2);
+            mockReader.Setup(x => x.FieldCount).Returns(1);
             mockReader.Setup(x => x.GetName(0)).Returns("id");
-            mockReader.Setup(x => x.GetName(1)).Returns("name");
             mockReader.Setup(x => x["id"]).Returns(0);
             mockReader.Setup(x => x.Read()).Callback
             (
@@ -57,10 +55,7 @@ namespace UnitTesting.Star_Plan_Logic_Testing.Space_Logic_Testing
                 {
                     int id = (int)mockReader.Object["id"];
 
-                    string name = regionData[id].name;
-
                     mockReader.Setup(x => x["id"]).Returns(id + 1);
-                    mockReader.Setup(x => x["name"]).Returns(name);
 
                     if (id == 2)
                     {
@@ -76,14 +71,14 @@ namespace UnitTesting.Star_Plan_Logic_Testing.Space_Logic_Testing
             return mockStoredProc.Object;
         }
 
-        private List<dynamic> TestLoadRegionObject()
+        private List<dynamic> TestLoadSystemObject()
         {
-            List<dynamic> regions = new List<dynamic>();
-            regions.Add(new { id = 1, name = "row1" });
-            regions.Add(new { id = 2, name = "row2" });
-            regions.Add(new { id = 3, name = "row3" });
+            List<dynamic> systems = new List<dynamic>();
+            systems.Add(new { id = 1});
+            systems.Add(new { id = 2});
+            systems.Add(new { id = 3});
 
-            return regions;
+            return systems;
         }
 
         #endregion

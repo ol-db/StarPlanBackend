@@ -123,7 +123,7 @@ namespace UnitTesting.Star_Plan_Logic_Testing.Space_Logic_Testing
             Console.WriteLine("actual: {0}", planets.ToJson());
 
             //assert
-            Assert.AreEqual(planetsExpectedJson, planets.ToJson());
+            Assert.AreEqual(planetsExpectedJson, planets.ToJsonSingle());
         }
 
         #region test data

@@ -104,7 +104,7 @@ namespace UnitTesting.Star_Plan_Logic_Testing.Space_Logic_Testing
             Console.WriteLine("actual: {0}", galaxies.ToJson());
 
             //assert
-            Assert.AreEqual(galaxiesExpectedJson, galaxies.ToJson());
+            Assert.AreEqual(galaxiesExpectedJson, galaxies.ToJsonSingle());
         }
 
         #region test data
